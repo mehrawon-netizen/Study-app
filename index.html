@@ -654,5 +654,97 @@ function deleteSubject(){
 /* ================= INIT ================= */
 renderHome();
 </script>
+  function generateId() {
+  return Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
+}
+
+function openSubjectModal() {
+  document.getElementById('subjectModal').style.display = 'flex';
+}
+
+function closeModal(id) {
+  document.getElementById(id).style.display = 'none';
+}
+
+function saveSubject() {
+  const nameInput = document.getElementById('subjectNameInput');
+  const name = nameInput.value.trim();
+  if (!name) { alert('لطفاً نام درس را وارد کنید'); return; }
+
+  const selectedColorEl = document.querySelector('#colorPicker .color-option.selected');
+  const color = selectedColorEl ? selectedColorEl.dataset.color : COLORS[0];
+
+  if (!data.subjects) data.subjects = [];
+  data.subjects.push({ id: generateId(), name: name, color: color, topics: [] });
+
+  saveData();
+  nameInput.value = '';
+  closeModal('subjectModal');
+  renderSubjectsList();
+  populateSubjectDropdown();
+}
+
+function renderSubjectsList() {
+  const container = document.getElementById('subjectsList');
+  if (!container) return;
+  if (!data.subjects || data.subjects.length === 0) {
+    container.innerHTML = '<p style="text-align:center;opacity:0.6;">هنوز درسی اضافه نشده</p>';
+    return;
+  }
+  container.innerHTML = data.subjects.map(s => `
+    <div class="subject-item" style="border-right:4px solid ${s.color};padding:10px;margin:6px 0;">
+      <span>${s.name}</span>
+    </div>
+  `).join('');
+}
+
+function populateSubjectDropdown() {
+  const select = document.getElementById('logSubjectSelect');
+  if (!select) return;
+  select.innerHTML = '<option value="">انتخاب درس</option>';
+  (data.subjects || []).forEach(s => {
+    const opt = document.createElement('option');
+    opt.value = s.id;
+    opt.textContent = s.name;
+    select.appendChild(opt);
+  });
+}
+
+function openLogModal() {
+  populateSubjectDropdown();
+  document.getElementById('logModal').style.display = 'flex';
+}
+
+function saveLog() {
+  const subjectId = document.getElementById('logSubjectSelect').value;
+  const topicName = document.getElementById('logTopicName').value.trim();
+  const activityType = document.getElementById('logActivityType').value;
+  const hours = parseFloat(document.getElementById('logHours').value) || 0;
+  const tests = parseInt(document.getElementById('logTests').value) || 0;
+  const correct = parseInt(document.getElementById('logCorrect').value) || 0;
+
+  if (!subjectId) { alert('لطفاً درس را انتخاب کنید'); return; }
+  if (!topicName) { alert('لطفاً نام مبحث را وارد کنید'); return; }
+
+  if (!data.logs) data.logs = [];
+  data.logs.push({
+    id: generateId(), subjectId, topicName, activityType,
+    hours, tests, correct, date: todayStr()
+  });
+
+  saveData();
+  document.getElementById('logTopicName').value = '';
+  document.getElementById('logHours').value = '';
+  document.getElementById('logTests').value = '';
+  document.getElementById('logCorrect').value = '';
+  closeModal('logModal');
+  renderStats();
+  renderTodayMessage();
+  renderHomeAlerts();
+}
+
+// این خط رو حتماً اضافه کن تا لیست درس‌ها موقع باز شدن صفحه نمایش داده بشه
+renderSubjectsList();
+
 </body>
 </html>
