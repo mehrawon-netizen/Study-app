@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>مسیر تخصص</title>
+<style>
+:root{
+  --bg:#070b12;
+  --bg2:#0c1420;
+  --accent1:#2E9EFF;      /* نئون آبی اصلی */
+  --accent1-glow: rgba(46,158,255,.55);
+  --accent2:#2CB67D;
+  --accent3:#FF6B6B;
+  --accent4:#FFD803;
+  --accent5:#4ECDC4;
+  --glass: rgba(255,255,255,.05);
+  --glass-strong: rgba(255,255,255,.09);
+  --glass-border: rgba(46,158,255,.28);
+  --text:#EAF6FF;
+  --text-dim:#7C93B0;
+}
+*{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+html,body{margin:0; padding:0; height:100%; background:var(--bg); color:var(--text);
+  font-family:-apple-system,'SF Pro Text',Tahoma,sans-serif; overscroll-behavior:none;}
+body{
+  padding-top:env(safe-area-inset-top);
+  padding-bottom:env(safe-area-inset-bottom);
+  background:
+    radial-gradient(circle at 20% 0%, rgba(46,158,255,.15), transparent 40%),
+    radial-gradient(circle at 100% 30%, rgba(44,182,125,.08), transparent 45%),
+    var(--bg);
+  min-height:100vh;
+}
+.app{max-width:480px; margin:0 auto; padding:16px 16px 100px;}
+
+/* ---------- Glass Card ---------- */
+.glass{
+  background:var(--glass);
+  border:1px solid var(--glass-border);
+  border-radius:20px;
+  backdrop-filter: blur(18px) saturate(160%);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+  box-shadow: 0 8px 32px rgba(0,0,0,.35);
+}
+
+/* ---------- Header ---------- */
+.header{display:flex; justify-content:space-between; align-items:center; padding:12px 4px 20px;}
+.header h1{font-size:20px; margin:0;}
+.header .level-badge{
+  padding:6px 14px; border-radius:14px; font-size:13px; font-weight:600;
+  background:linear-gradient(135deg, var(--accent1), #7ad4ff);
+  color:#00131f; box-shadow:0 0 18px var(--accent1-glow);
+}
+
+/* ---------- Stats row ---------- */
+.stats-row{display:flex; gap:10px; margin-bottom:18px;}
+.stat-card{flex:1; padding:14px; text-align:center;}
+.stat-card .num{font-size:20px; font-weight:700; color:var(--accent1); text-shadow:0 0 12px var(--accent1-glow);}
+.stat-card .lbl{font-size:11px; color:var(--text-dim); margin-top:4px;}
+
+/* ---------- Alerts ---------- */
+.alert-card{display:flex; align-items:center; gap:12px; padding:14px; margin-bottom:10px; cursor:pointer;}
+.alert-card.urgent{border-color:rgba(255,107,107,.4);}
+.alert-icon{font-size:22px;}
+.alert-title{font-size:14px; font-weight:600;}
+.alert-sub{font-size:12px; color:var(--text-dim); margin-top:2px;}
+.alert-badge{margin-inline-start:auto; font-size:11px; background:var(--accent3); color:#fff;
+  padding:4px 10px; border-radius:10px;}
+
+/* ---------- Badges ---------- */
+.section-title{font-size:14px; font-weight:700; margin:22px 0 10px; color:var(--text);}
+.badges-row{display:flex; gap:10px; overflow-x:auto; padding-bottom:6px;}
+.badge-item{min-width:64px; text-align:center; padding:10px 6px; border-radius:16px; font-size:11px;}
+.badge-item.locked{opacity:.25; filter:grayscale(1);}
+.badge-item.unlocked{box-shadow:0 0 16px var(--accent1-glow);}
+.badge-item .b-icon{font-size:24px; display:block; margin-bottom:4px;}
+
+/* ---------- Subject Card ---------- */
+.subject-card{padding:16px; margin-bottom:12px; cursor:pointer; position:relative; overflow:hidden;}
+.subject-card::before{content:''; position:absolute; inset-inline-start:0; top:0; bottom:0; width:4px;
+  background:var(--card-color, var(--accent1)); box-shadow:0 0 12px var(--card-color, var(--accent1));}
+.subject-name{font-size:15px; font-weight:700;}
+.subject-meta{font-size:12px; color:var(--text-dim); margin-top:4px;}
+.progress-bar{height:6px; border-radius:6px; background:rgba(255,255,255,.08); margin-top:10px; overflow:hidden;}
+.progress-fill{height:100%; border-radius:6px; background:linear-gradient(90deg, var(--accent1), #7ad4ff);}
+
+/* ---------- Review list items ---------- */
+.review-item{display:flex; align-items:center; gap:12px; padding:14px; margin-bottom:8px;}
+.review-item.due{border-color:rgba(255,107,107,.45);}
+.review-item.soon{border-color:rgba(255,216,3,.4);}
+.review-item.ok{border-color:rgba(44,182,125,.4);}
+.review-dot{width:10px; height:10px; border-radius:50%;}
+.review-dot.due{background:var(--accent3); box-shadow:0 0 10px var(--accent3);}
+.review-dot.soon{background:var(--accent4); box-shadow:0 0 10px var(--accent4);}
+.review-dot.ok{background:var(--accent2); box-shadow:0 0 10px var(--accent2);}
+.review-title{font-size:14px; font-weight:600;}
+.review-sub{font-size:12px; color:var(--text-dim); margin-top:2px;}
+.empty-state{text-align:center; color:var(--text-dim); font-size:13px; padding:30px 0;}
+
+/* ---------- Insights ---------- */
+.insight-card{padding:14px; margin-bottom:10px; font-size:13px; line-height:1.8;}
+
+/* ---------- Tab bar ---------- */
+.tab-bar{
+  position:fixed; bottom:0; inset-inline:0; z-index:50;
+  padding-bottom:calc(10px + env(safe-area-inset-bottom));
+  padding-top:10px;
+  background:rgba(10,15,24,.75);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  border-top:1px solid var(--glass-border);
+}
+.tab-bar-inner{max-width:480px; margin:0 auto; display:flex;}
+.tab-btn{flex:1; text-align:center; background:none; border:none; color:var(--text-dim);
+  font-size:11px; display:flex; flex-direction:column; align-items:center; gap:4px; padding:4px;}
+.tab-btn .ic{font-size:20px;}
+.tab-btn.active{color:var(--accent1); text-shadow:0 0 10px var(--accent1-glow);}
+
+.tab-content{display:none;}
+.tab-content.active{display:block; animation:fadeIn .25s ease;}
+@keyframes fadeIn{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);}}
+
+/* ---------- FAB ---------- */
+.fab{
+  position:fixed; bottom:calc(78px + env(safe-area-inset-bottom)); inset-inline-end:20px; z-index:40;
+  width:56px; height:56px; border-radius:50%; border:none;
+  background:linear-gradient(135deg, var(--accent1), #7ad4ff);
+  color:#00131f; font-size:26px; display:flex; align-items:center; justify-content:center;
+  box-shadow:0 6px 24px var(--accent1-glow);
+}
+
+/* ---------- Modals ---------- */
+.modal-overlay{
+  position:fixed; inset:0; background:rgba(0,0,0,.55); backdrop-filter:blur(4px);
+  display:none; align-items:flex-end; z-index:100;
+}
+.modal-overlay.open{display:flex;}
+.modal-sheet{
+  width:100%; max-width:480px; margin:0 auto;
+  background:var(--bg2); border:1px solid var(--glass-border);
+  border-radius:24px 24px 0 0; padding:14px 20px calc(24px + env(safe-area-inset-bottom));
+  box-shadow:0 -10px 40px rgba(0,0,0,.5);
+  animation:slideUp .25s ease;
+}
+@keyframes slideUp{from{transform:translateY(100%);} to{transform:translateY(0);}}
+.modal-handle{width:40px; height:4px; background:var(--glass-border); border-radius:4px; margin:0 auto 16px;}
+.modal-title{font-size:16px; font-weight:700; margin-bottom:16px;}
+.form-group{margin-bottom:12px;}
+.form-group label{display:block; font-size:12px; color:var(--text-dim); margin-bottom:6px;}
+.form-row{display:flex; gap:10px;}
+.form-row .form-group{flex:1;}
+input, select{
+  width:100%; padding:12px; border-radius:12px; border:1px solid var(--glass-border);
+  background:rgba(255,255,255,.04); color:var(--text); font-size:14px; outline:none;
+}
+input:focus, select:focus{border-color:var(--accent1); box-shadow:0 0 0 3px var(--accent1-glow);}
+.modal-btn{
+  width:100%; padding:14px; border:none; border-radius:14px; font-size:14px; font-weight:700;
+  margin-top:8px; background:linear-gradient(135deg, var(--accent1), #7ad4ff); color:#00131f;
+}
+.modal-btn.secondary{background:rgba(255,255,255,.06); color:var(--text);}
+.modal-btn.danger{background:rgba(255,107,107,.15); color:var(--accent3); border:1px solid rgba(255,107,107,.4);}
+.color-picker{display:flex; gap:10px; flex-wrap:wrap;}
+.color-dot{width:32px; height:32px; border-radius:50%; cursor:pointer; border:2px solid transparent;}
+.color-dot.selected{border-color:#fff; box-shadow:0 0 10px #fff;}
+</style>
+</head>
+<body>
+
+<div class="app">
+  <div class="header">
+    <h1>مسیر تخصص</h1>
+    <div class="level-badge" id="levelBadge">سطح ۱</div>
+  </div>
+
+  <!-- HOME -->
+  <div class="tab-content active" id="tab-home">
+    <div class="stats-row" id="homeStats"></div>
+    <div id="topAlertsHome"></div>
+
+    <div class="section-title">🏅 مدال‌ها</div>
+    <div class="badges-row" id="badgesRow"></div>
+
+    <div class="section-title">📚 درس‌ها</div>
+    <div id="subjectsList"></div>
+  </div>
+
+  <!-- REVIEW -->
+  <div class="tab-content" id="tab-review">
+    <div class="section-title">⏰ نیاز به مرور فوری</div>
+    <div id="urgentReviews"></div>
+
+    <div class="section-title">🔜 مرورهای پیش‌رو</div>
+    <div id="upcomingReviews"></div>
+
+    <div class="section-title">✅ به‌روز و مرورشده</div>
+    <div id="okReviews"></div>
+  </div>
+
+  <!-- INSIGHTS -->
+  <div class="tab-content" id="tab-insights">
+    <div class="section-title">📊 تحلیل هوشمند عملکرد</div>
+    <div id="insightsList"></div>
+  </div>
+</div>
+
+<button class="fab" onclick="openModal('logModal')">＋</button>
+
+<div class="tab-bar">
+  <div class="tab-bar-inner">
+    <button class="tab-btn active" onclick="switchTabProgrammatic('home')"><span class="ic">🏠</span>خانه</button>
+    <button class="tab-btn" onclick="switchTabProgrammatic('review')"><span class="ic">🔄</span>مرورها</button>
+    <button class="tab-btn" onclick="switchTabProgrammatic('insights')"><span class="ic">📊</span>تحلیل</button>
+  </div>
+</div>
+
+<!-- Log Study Modal -->
+<div class="modal-overlay" id="logModal">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">ثبت مطالعه امروز</div>
+    <div class="form-group">
+      <label>انتخاب درس</label>
+      <select id="logSubjectSelect"></select>
+    </div>
+    <div class="form-group">
+      <label>نام مبحث (برای پیگیری مرور)</label>
+      <input type="text" id="logTopicName" placeholder="مثلاً: نارسایی قلبی">
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>نوع فعالیت</label>
+        <select id="logActivityType">
+          <option value="read">مطالعه اولیه 📖</option>
+          <option value="test">تست‌زنی 📝</option>
+          <option value="review">مرور 🔄</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>ساعت مطالعه</label>
+        <input type="number" id="logHours" placeholder="مثلاً 3.5" step="0.25" min="0">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>تعداد تست</label>
+        <input type="number" id="logTests" placeholder="مثلاً 40" min="0">
+      </div>
+      <div class="form-group">
+        <label>تست صحیح</label>
+        <input type="number" id="logCorrect" placeholder="مثلاً 30" min="0">
+      </div>
+    </div>
+    <button class="modal-btn" onclick="saveLog()">ثبت و دریافت امتیاز</button>
+    <button class="modal-btn secondary" onclick="closeModal('logModal')">انصراف</button>
+  </div>
+</div>
+
+<!-- Add Subject Modal -->
+<div class="modal-overlay" id="subjectModal">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">افزودن درس جدید</div>
+    <div class="form-group">
+      <label>نام درس</label>
+      <input type="text" id="subjectNameInput" placeholder="مثلاً: قلب و عروق">
+    </div>
+    <div class="form-group">
+      <label>رنگ درس</label>
+      <div class="color-picker" id="colorPicker"></div>
+    </div>
+    <button class="modal-btn" onclick="saveSubject()">افزودن درس</button>
+    <button class="modal-btn secondary" onclick="closeModal('subjectModal')">انصراف</button>
+  </div>
+</div>
+
+<!-- Subject Detail Modal -->
+<div class="modal-overlay" id="detailModal">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="detailTitle">جزئیات درس</div>
+    <div id="detailStats" class="stats-row" style="margin-bottom:16px;"></div>
+    <div class="section-title" style="margin-top:0;">مباحث و وضعیت مرور</div>
+    <div id="detailTopics"></div>
+    <div class="section-title">تاریخچه اخیر</div>
+    <div id="detailHistory"></div>
+    <button class="modal-btn danger" onclick="deleteSubject()">حذف این درس</button>
+    <button class="modal-btn secondary" onclick="closeModal('detailModal')">بستن</button>
+  </div>
+</div>
+
+<script>
+/* ================= DATA MODEL ================= */
+const STORAGE_KEY = 'medExamTracker_v2';
+const COLORS = ['#2E9EFF','#2CB67D','#FF6B6B','#FFD803','#4ECDC4','#7ad4ff','#FF8FA3','#B388FF'];
+const REVIEW_INTERVALS = [1,3,7,16,30];
+const BADGE_DEFS = [
+  {id:'first', icon:'🎯', name:'اولین قدم', check: d => getAllLogsFlat().length >= 1},
+  {id:'streak7', icon:'🔥', name:'۷ روز پیاپی', check: d => d.streak >= 7},
+  {id:'streak30', icon:'⚡', name:'۳۰ روز پیاپی', check: d => d.streak >= 30},
+  {id:'hours50', icon:'📚', name:'۵۰ ساعت', check: d => getTotalHours() >= 50},
+  {id:'hours200', icon:'🏆', name:'۲۰۰ ساعت', check: d => getTotalHours() >= 200},
+  {id:'level10', icon:'⭐', name:'سطح ۱۰', check: d => getLevel(getTotalXP()) >= 10},
+  {id:'reviewer', icon:'🔄', name:'اهل مرور', check: d => getAllLogsFlat().filter(l=>l.type==='review').length >= 10},
+  {id:'subjects3', icon:'🧩', name:'۳ درس فعال', check: d => d.subjects.length >= 3},
+];
+
+let selectedColor = COLORS[0];
+let activeSubjectId = null;
+
+function loadData(){
+  const raw = localStorage.getItem(STORAGE_KEY);
+  if(raw) return JSON.parse(raw);
+  return { subjects: [], streak: 0, lastLogDate: null, xp: 0 };
+}
+let data = loadData();
+function saveData(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }
+
+/* ================= HELPERS ================= */
+function todayStr(){ return new Date().toISOString().slice(0,10); }
+function daysBetween(a,b){
+  if(!a) return 999;
+  return Math.round((new Date(b) - new Date(a)) / 86400000);
+}
+function toFa(n){ return String(n).replace(/[0-9]/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]); }
+
+function getAllLogsFlat(){
+  let logs = [];
+  data.subjects.forEach(s => (s.logs||[]).forEach(l => logs.push({...l, subjectId:s.id})));
+  return logs;
+}
+function getTotalHours(){ return getAllLogsFlat().reduce((s,l)=>s+(l.hours||0),0); }
+function getTotalXP(){ return data.xp || 0; }
+function getLevel(xp){ return Math.floor(xp/200) + 1; }
+
+/* ================= REVIEW ENGINE (file-confirmed) ================= */
+function getTopicReviewStatus(topic){
+  const daysSinceLast = daysBetween(topic.lastActivity, todayStr());
+  const reviewCount = topic.reviewsDone.length;
+  const nextIntervalIdx = Math.min(reviewCount, REVIEW_INTERVALS.length - 1);
+  const nextIntervalTarget = REVIEW_INTERVALS[nextIntervalIdx];
+  const daysUntilDue = nextIntervalTarget - daysSinceLast;
+  let status = 'ok';
+  if(daysUntilDue <= 0) status = 'due';
+  else if(daysUntilDue <= 2) status = 'soon';
+  return { daysSinceLast, reviewCount, nextIntervalTarget, daysUntilDue, status, maxedOut: reviewCount >= REVIEW_INTERVALS.length };
+}
+function getAllTopicsFlat(){
+  let topics = [];
+  data.subjects.forEach(s => {
+    if(!s.topics) return;
+    Object.keys(s.topics).forEach(tName => {
+      const status = getTopicReviewStatus(s.topics[tName]);
+      topics.push({ name: tName, subjectId: s.id, subjectName: s.name, subjectColor: s.color, ...s.topics[tName], ...status });
+    });
+  });
+  return topics;
+}
+
+/* ================= RENDER: HOME ================= */
+function renderHomeStats(){
+  const el = document.getElementById('homeStats');
+  el.innerHTML = `
+    <div class="glass stat-card"><div class="num">${toFa(data.streak||0)}</div><div class="lbl">روز پیاپی 🔥</div></div>
+    <div class="glass stat-card"><div class="num">${toFa(Math.round(getTotalHours()))}</div><div class="lbl">ساعت مطالعه</div></div>
+    <div class="glass stat-card"><div class="num">${toFa(getLevel(getTotalXP()))}</div><div class="lbl">سطح</div></div>
+  `;
+  document.getElementById('levelBadge').textContent = 'سطح ' + toFa(getLevel(getTotalXP()));
+}
+function renderHomeAlerts(){
+  const topics = getAllTopicsFlat();
+  const dueTopics = topics.filter(t => t.status === 'due').slice(0,2);
+  const container = document.getElementById('topAlertsHome');
+  container.innerHTML = '';
+  if(dueTopics.length > 0){
+    dueTopics.forEach(t => {
+      const div = document.createElement('div');
+      div.className = 'glass alert-card urgent';
+      div.onclick = () => { switchTabProgrammatic('review'); };
+      div.innerHTML = `
+        <div class="alert-icon">⏰</div>
+        <div class="alert-body">
+          <div class="alert-title">مرور «${t.name}» عقب افتاده</div>
+          <div class="alert-sub">${t.subjectName} • ${toFa(t.daysSinceLast)} روز از آخرین بار</div>
+        </div>
+        <div class="alert-badge">فوری</div>
+      `;
+      container.appendChild(div);
+    });
+  }
+  const burnout = checkBurnout();
+  if(burnout){
+    const div = document.createElement('div');
+    div.className = 'glass alert-card info';
+    div.innerHTML = `
+      <div class="alert-icon">😮‍💨</div>
+      <div class="alert-body">
+        <div class="alert-title">هشدار خستگی ذهنی</div>
+        <div class="alert-sub">${burnout}</div>
+      </div>
+    `;
+    container.appendChild(div);
+  }
+}
+function checkBurnout(){
+  const all = getAllLogsFlat();
+  const last3Days = [];
+  for(let i=0;i<3;i++){
+    const d = new Date(Date.now()-i*86400000).toISOString().slice(0,10);
+    last3Days.push(d);
+  }
+  const recentLogs = all.filter(l => last3Days.includes(l.date));
+  if(recentLogs.length < 3) return null;
+  const recentHours = recentLogs.reduce((s,l)=>s+l.hours,0);
+  const recentTests = recentLogs.reduce((s,l)=>s+l.tests,0);
+  const recentCorrect = recentLogs.reduce((s,l)=>s+l.correct,0);
+  const recentAcc = recentTests > 0 ? (recentCorrect/recentTests*100) : 100;
+  const avgHoursPerDay = recentHours / 3;
+  if(avgHoursPerDay >= 7 && recentAcc < 65){
+    return `۳ روزه بیش از ${avgHoursPerDay.toFixed(1)} ساعت در روز می‌خونی ولی دقتت ${recentAcc.toFixed(0)}٪ شده. مغزت داره اشباع می‌شه — یه روز استراحت واقعی بگیر.`;
+  }
+  return null;
+}
+function renderBadges(){
+  const row = document.getElementById('badgesRow');
+  row.innerHTML = '';
+  BADGE_DEFS.forEach(b => {
+    const unlocked = b.check(data);
+    const div = document.createElement('div');
+    div.className = 'glass badge-item ' + (unlocked ? 'unlocked' : 'locked');
+    div.innerHTML = `<span class="b-icon">${b.icon}</span>${b.name}`;
+    row.appendChild(div);
+  });
+}
+function renderSubjectsList(){
+  const el = document.getElementById('subjectsList');
+  el.innerHTML = '';
+  data.subjects.forEach(s => {
+    const hours = (s.logs||[]).reduce((a,l)=>a+(l.hours||0),0);
+    const div = document.createElement('div');
+    div.className = 'glass subject-card';
+    div.style.setProperty('--card-color', s.color);
+    div.onclick = () => openDetail(s.id);
+    div.innerHTML = `
+      <div class="subject-name">${s.name}</div>
+      <div class="subject-meta">${toFa(Math.round(hours))} ساعت مطالعه • ${toFa(Object.keys(s.topics||{}).length)} مبحث</div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${Math.min(100,hours)}%"></div></div>
+    `;
+    el.appendChild(div);
+  });
+}
+function renderHome(){
+  renderHomeStats();
+  renderHomeAlerts();
+  renderBadges();
+  renderSubjectsList();
+}
+
+/* ================= RENDER: REVIEW TAB ================= */
+function renderReviewItem(t){
+  const div = document.createElement('div');
+  div.className = `glass review-item ${t.status}`;
+  div.onclick = () => openDetail(t.subjectId);
+  const subText = t.status === 'ok'
+    ? `${t.subjectName} • مرور بعدی تا ${toFa(t.daysUntilDue)} روز دیگر`
+    : `${t.subjectName} • ${toFa(t.daysSinceLast)} روز از آخرین بار`;
+  div.innerHTML = `
+    <div class="review-dot ${t.status}"></div>
+    <div>
+      <div class="review-title">${t.name}</div>
+      <div class="review-sub">${subText}</div>
+    </div>
+  `;
+  return div;
+}
+function renderReviewTab(){
+  const topics = getAllTopicsFlat();
+  const due = topics.filter(t=>t.status==='due');
+  const soon = topics.filter(t=>t.status==='soon');
+  const ok = topics.filter(t=>t.status==='ok');
+
+  const urgentEl = document.getElementById('urgentReviews');
+  const upcomingEl = document.getElementById('upcomingReviews');
+  const okEl = document.getElementById('okReviews');
+  urgentEl.innerHTML = ''; upcomingEl.innerHTML = ''; okEl.innerHTML = '';
+
+  if(due.length===0) urgentEl.innerHTML = '<div class="empty-state">چیزی برای مرور فوری نیست 🎉</div>';
+  else due.forEach(t => urgentEl.appendChild(renderReviewItem(t)));
+
+  if(soon.length===0) upcomingEl.innerHTML = '<div class="empty-state">مرور نزدیکی وجود ندارد</div>';
+  else soon.forEach(t => upcomingEl.appendChild(renderReviewItem(t)));
+
+  if(ok.length===0) okEl.innerHTML = '<div class="empty-state">هنوز موردی به‌روز نیست</div>';
+  else ok.forEach(t => okEl.appendChild(renderReviewItem(t)));
+}
+
+/* ================= RENDER: INSIGHTS TAB ================= */
+function renderInsightsTab(){
+  const el = document.getElementById('insightsList');
+  el.innerHTML = '';
+  const logs = getAllLogsFlat();
+  const insights = [];
+
+  const totalTests = logs.reduce((s,l)=>s+(l.tests||0),0);
+  const totalCorrect = logs.reduce((s,l)=>s+(l.correct||0),0);
+  const acc = totalTests>0 ? (totalCorrect/totalTests*100).toFixed(1) : null;
+  if(acc) insights.push(`📈 دقت کلی تست‌زنی شما: <b>${toFa(acc)}٪</b> از ${toFa(totalTests)} تست`);
+
+  insights.push(`⏱️ مجموع ساعت مطالعه: <b>${toFa(Math.round(getTotalHours()))}</b> ساعت`);
+
+  const bySubject = {};
+  data.subjects.forEach(s => {
+    const h = (s.logs||[]).reduce((a,l)=>a+(l.hours||0),0);
+    bySubject[s.name] = h;
+  });
+  const sorted = Object.entries(bySubject).sort((a,b)=>b[1]-a[1]);
+  if(sorted.length) insights.push(`🥇 بیشترین وقت صرف‌شده روی: <b>${sorted[0][0]}</b> (${toFa(Math.round(sorted[0][1]))} ساعت)`);
+
+  const burnout = checkBurnout();
+  if(burnout) insights.push('😮‍💨 ' + burnout);
+
+  const topics = getAllTopicsFlat();
+  const dueCount = topics.filter(t=>t.status==='due').length;
+  if(dueCount>0) insights.push(`⏰ در حال حاضر <b>${toFa(dueCount)}</b> مبحث نیاز به مرور فوری دارد`);
+
+  if(insights.length===0){
+    el.innerHTML = '<div class="empty-state">هنوز داده کافی برای تحلیل نیست</div>';
+    return;
+  }
+  insights.forEach(txt => {
+    const div = document.createElement('div');
+    div.className = 'glass insight-card';
+    div.innerHTML = txt;
+    el.appendChild(div);
+  });
+}
+
+/* ================= TABS ================= */
+function switchTabProgrammatic(name){
+  document.querySelectorAll('.tab-btn').forEach((b,i)=>{
+    b.classList.remove('active');
+    if((name==='home'&&i===0)||(name==='review'&&i===1)||(name==='insights'&&i===2)) b.classList.add('active');
+  });
+  document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  if(name === 'home') renderHome();
+  if(name === 'review') renderReviewTab();
+  if(name === 'insights') renderInsightsTab();
+}
+
+/* ================= MODALS ================= */
+function openModal(id){
+  if(id === 'logModal'){
+    const sel = document.getElementById('logSubjectSelect');
+    sel.innerHTML = data.subjects.map(s=>`<option value="${s.id}">${s.name}</option>`).join('');
+  }
+  if(id === 'subjectModal'){
+    const cp = document.getElementById('colorPicker');
+    cp.innerHTML = COLORS.map(c=>`<div class="color-dot ${c===selectedColor?'selected':''}" style="background:${c}" onclick="selectColor('${c}')"></div>`).join('');
+  }
+  document.getElementById(id).classList.add('open');
+}
+function closeModal(id){ document.getElementById(id).classList.remove('open'); }
+function selectColor(c){ selectedColor = c; openModal('subjectModal'); }
+
+function saveLog(){
+  const subjectId = document.getElementById('logSubjectSelect').value;
+  const topicName = document.getElementById('logTopicName').value.trim();
+  const type = document.getElementById('logActivityType').value;
+  const hours = parseFloat(document.getElementById('logHours').value) || 0;
+  const tests = parseInt(document.getElementById('logTests').value) || 0;
+  const correct = parseInt(document.getElementById('logCorrect').value) || 0;
+  const subject = data.subjects.find(s=>s.id===subjectId);
+  if(!subject) return;
+
+  subject.logs = subject.logs || [];
+  subject.logs.push({date: todayStr(), type, hours, tests, correct});
+
+  if(topicName){
+    subject.topics = subject.topics || {};
+    if(!subject.topics[topicName]){
+      subject.topics[topicName] = {firstDate: todayStr(), reviewsDone: [], lastActivity: todayStr()};
+    } else {
+      subject.topics[topicName].lastActivity = todayStr();
+      if(type === 'review') subject.topics[topicName].reviewsDone.push(todayStr());
+    }
+  }
+
+  const today = todayStr();
+  if(data.lastLogDate !== today){
+    const y = new Date(Date.now()-86400000).toISOString().slice(0,10);
+    data.streak = (data.lastLogDate === y) ? (data.streak||0)+1 : 1;
+    data.lastLogDate = today;
+  }
+  data.xp = (data.xp||0) + Math.round(hours*10) + tests;
+
+  saveData();
+  closeModal('logModal');
+  document.getElementById('logTopicName').value='';
+  document.getElementById('logHours').value='';
+  document.getElementById('logTests').value='';
+  document.getElementById('logCorrect').value='';
+  switchTabProgrammatic('home');
+}
+
+function saveSubject(){
+  const name = document.getElementById('subjectNameInput').value.trim();
+  if(!name) return;
+  data.subjects.push({id: 's_'+Date.now(), name, color: selectedColor, logs: [], topics: {}});
+  saveData();
+  closeModal('subjectModal');
+  document.getElementById('subjectNameInput').value='';
+  renderHome();
+}
+
+function openDetail(id){
+  activeSubjectId = id;
+  const s = data.subjects.find(x=>x.id===id);
+  if(!s) return;
+  document.getElementById('detailTitle').textContent = s.name;
+  const hours = (s.logs||[]).reduce((a,l)=>a+(l.hours||0),0);
+  const tests = (s.logs||[]).reduce((a,l)=>a+(l.tests||0),0);
+  document.getElementById('detailStats').innerHTML = `
+    <div class="glass stat-card"><div class="num">${toFa(Math.round(hours))}</div><div class="lbl">ساعت</div></div>
+    <div class="glass stat-card"><div class="num">${toFa(tests)}</div><div class="lbl">تست</div></div>
+    <div class="glass stat-card"><div class="num">${toFa(Object.keys(s.topics||{}).length)}</div><div class="lbl">مبحث</div></div>
+  `;
+  const topicsEl = document.getElementById('detailTopics');
+  topicsEl.innerHTML = '';
+  Object.entries(s.topics||{}).forEach(([name, t])=>{
+    const status = getTopicReviewStatus(t);
+    const div = document.createElement('div');
+    div.className = `glass review-item ${status.status}`;
+    div.innerHTML = `<div class="review-dot ${status.status}"></div><div><div class="review-title">${name}</div><div class="review-sub">${toFa(status.daysSinceLast)} روز از آخرین فعالیت</div></div>`;
+    topicsEl.appendChild(div);
+  });
+  const histEl = document.getElementById('detailHistory');
+  histEl.innerHTML = (s.logs||[]).slice(-5).reverse().map(l=>
+    `<div class="glass insight-card">${l.date} • ${l.hours} ساعت • ${l.tests||0} تست</div>`
+  ).join('') || '<div class="empty-state">تاریخچه‌ای ثبت نشده</div>';
+
+  openModal('detailModal');
+}
+function deleteSubject(){
+  data.subjects = data.subjects.filter(s=>s.id!==activeSubjectId);
+  saveData();
+  closeModal('detailModal');
+  renderHome();
+}
+
+/* ================= INIT ================= */
+renderHome();
+</script>
+</body>
+</html>
