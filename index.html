@@ -2,749 +2,1625 @@
 <html lang="fa" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>مسیر تخصص</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>رزیدنت‌یار | مدیریت یک‌ساله آزمون تخصص</title>
 <style>
 :root{
-  --bg:#070b12;
-  --bg2:#0c1420;
-  --accent1:#2E9EFF;      /* نئون آبی اصلی */
-  --accent1-glow: rgba(46,158,255,.55);
-  --accent2:#2CB67D;
-  --accent3:#FF6B6B;
-  --accent4:#FFD803;
-  --accent5:#4ECDC4;
-  --glass: rgba(255,255,255,.05);
-  --glass-strong: rgba(255,255,255,.09);
-  --glass-border: rgba(46,158,255,.28);
-  --text:#EAF6FF;
-  --text-dim:#7C93B0;
+  --navy:#0b1f3a;
+  --navy-light:#13294b;
+  --navy-lighter:#1c3a63;
+  --med-green:#0e8a6d;
+  --med-green-light:#12b58c;
+  --white:#f7f9fb;
+  --red:#e2626b;
+  --gold:#d4af37;
+  --gray:#8a95a5;
+  --card-bg:#ffffff;
+  --shadow: 0 4px 16px rgba(11,31,58,0.08);
 }
-*{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
-html,body{margin:0; padding:0; height:100%; background:var(--bg); color:var(--text);
-  font-family:-apple-system,'SF Pro Text',Tahoma,sans-serif; overscroll-behavior:none;}
+*{box-sizing:border-box; margin:0; padding:0;}
 body{
-  padding-top:env(safe-area-inset-top);
-  padding-bottom:env(safe-area-inset-bottom);
-  background:
-    radial-gradient(circle at 20% 0%, rgba(46,158,255,.15), transparent 40%),
-    radial-gradient(circle at 100% 30%, rgba(44,182,125,.08), transparent 45%),
-    var(--bg);
+  font-family:'Vazirmatn','Tahoma',sans-serif;
+  background:linear-gradient(180deg,#eef2f7,#e4ebf2);
+  color:var(--navy);
   min-height:100vh;
 }
-.app{max-width:480px; margin:0 auto; padding:16px 16px 100px;}
+#app{ display:flex; min-height:100vh; }
 
-/* ---------- Glass Card ---------- */
-.glass{
-  background:var(--glass);
-  border:1px solid var(--glass-border);
-  border-radius:20px;
-  backdrop-filter: blur(18px) saturate(160%);
-  -webkit-backdrop-filter: blur(18px) saturate(160%);
-  box-shadow: 0 8px 32px rgba(0,0,0,.35);
+/* ---------- Sidebar ---------- */
+#sidebar{
+  width:230px;
+  background:linear-gradient(180deg,var(--navy),var(--navy-light));
+  color:var(--white);
+  display:flex; flex-direction:column;
+  padding:20px 12px;
+  position:sticky; top:0; height:100vh;
+  flex-shrink:0;
+}
+#sidebar .logo{
+  display:flex; align-items:center; gap:8px;
+  font-weight:bold; font-size:18px;
+  padding:10px 8px 20px 8px;
+  border-bottom:1px solid rgba(255,255,255,0.1);
+  margin-bottom:14px;
+}
+#sidebar .logo .pulse{
+  width:12px; height:12px; border-radius:50%;
+  background:var(--med-green-light);
+  box-shadow:0 0 0 0 rgba(18,181,140,.7);
+  animation:pulse 1.6s infinite;
+}
+@keyframes pulse{
+  0%{box-shadow:0 0 0 0 rgba(18,181,140,.6);}
+  70%{box-shadow:0 0 0 10px rgba(18,181,140,0);}
+  100%{box-shadow:0 0 0 0 rgba(18,181,140,0);}
+}
+.nav-item{
+  display:flex; align-items:center; gap:10px;
+  padding:11px 12px; border-radius:10px;
+  cursor:pointer; font-size:14px;
+  color:rgba(255,255,255,0.75);
+  transition:.2s;
+  margin-bottom:2px;
+}
+.nav-item:hover{ background:rgba(255,255,255,0.06); color:#fff; }
+.nav-item.active{
+  background:var(--med-green);
+  color:#fff;
+  font-weight:bold;
+}
+.nav-item .icon{ font-size:17px; width:20px; text-align:center; }
+#sidebar .footer-info{
+  margin-top:auto; font-size:11px; color:rgba(255,255,255,0.4);
+  padding:10px 8px;
+  border-top:1px solid rgba(255,255,255,0.08);
 }
 
-/* ---------- Header ---------- */
-.header{display:flex; justify-content:space-between; align-items:center; padding:12px 4px 20px;}
-.header h1{font-size:20px; margin:0;}
-.header .level-badge{
-  padding:6px 14px; border-radius:14px; font-size:13px; font-weight:600;
-  background:linear-gradient(135deg, var(--accent1), #7ad4ff);
-  color:#00131f; box-shadow:0 0 18px var(--accent1-glow);
+/* ---------- Main ---------- */
+#main{ flex:1; padding:22px 26px; max-width:1200px; margin:0 auto; width:100%; }
+.page{ display:none; animation:fadeIn .25s ease; }
+.page.active{ display:block; }
+@keyframes fadeIn{ from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);} }
+
+.page-title{
+  font-size:22px; font-weight:bold; margin-bottom:4px;
+  display:flex; align-items:center; gap:8px;
+}
+.page-sub{ color:var(--gray); font-size:13px; margin-bottom:20px; }
+
+.grid{ display:grid; gap:16px; }
+.grid-2{ grid-template-columns:1fr 1fr; }
+.grid-3{ grid-template-columns:1fr 1fr 1fr; }
+.grid-4{ grid-template-columns:repeat(4,1fr); }
+@media(max-width:900px){
+  .grid-2,.grid-3,.grid-4{ grid-template-columns:1fr 1fr; }
+  #sidebar{ width:70px; }
+  #sidebar .label{ display:none; }
+  #sidebar .logo span.text{ display:none; }
+}
+@media(max-width:600px){
+  .grid-2,.grid-3,.grid-4{ grid-template-columns:1fr; }
 }
 
-/* ---------- Stats row ---------- */
-.stats-row{display:flex; gap:10px; margin-bottom:18px;}
-.stat-card{flex:1; padding:14px; text-align:center;}
-.stat-card .num{font-size:20px; font-weight:700; color:var(--accent1); text-shadow:0 0 12px var(--accent1-glow);}
-.stat-card .lbl{font-size:11px; color:var(--text-dim); margin-top:4px;}
-
-/* ---------- Alerts ---------- */
-.alert-card{display:flex; align-items:center; gap:12px; padding:14px; margin-bottom:10px; cursor:pointer;}
-.alert-card.urgent{border-color:rgba(255,107,107,.4);}
-.alert-icon{font-size:22px;}
-.alert-title{font-size:14px; font-weight:600;}
-.alert-sub{font-size:12px; color:var(--text-dim); margin-top:2px;}
-.alert-badge{margin-inline-start:auto; font-size:11px; background:var(--accent3); color:#fff;
-  padding:4px 10px; border-radius:10px;}
-
-/* ---------- Badges ---------- */
-.section-title{font-size:14px; font-weight:700; margin:22px 0 10px; color:var(--text);}
-.badges-row{display:flex; gap:10px; overflow-x:auto; padding-bottom:6px;}
-.badge-item{min-width:64px; text-align:center; padding:10px 6px; border-radius:16px; font-size:11px;}
-.badge-item.locked{opacity:.25; filter:grayscale(1);}
-.badge-item.unlocked{box-shadow:0 0 16px var(--accent1-glow);}
-.badge-item .b-icon{font-size:24px; display:block; margin-bottom:4px;}
-
-/* ---------- Subject Card ---------- */
-.subject-card{padding:16px; margin-bottom:12px; cursor:pointer; position:relative; overflow:hidden;}
-.subject-card::before{content:''; position:absolute; inset-inline-start:0; top:0; bottom:0; width:4px;
-  background:var(--card-color, var(--accent1)); box-shadow:0 0 12px var(--card-color, var(--accent1));}
-.subject-name{font-size:15px; font-weight:700;}
-.subject-meta{font-size:12px; color:var(--text-dim); margin-top:4px;}
-.progress-bar{height:6px; border-radius:6px; background:rgba(255,255,255,.08); margin-top:10px; overflow:hidden;}
-.progress-fill{height:100%; border-radius:6px; background:linear-gradient(90deg, var(--accent1), #7ad4ff);}
-
-/* ---------- Review list items ---------- */
-.review-item{display:flex; align-items:center; gap:12px; padding:14px; margin-bottom:8px;}
-.review-item.due{border-color:rgba(255,107,107,.45);}
-.review-item.soon{border-color:rgba(255,216,3,.4);}
-.review-item.ok{border-color:rgba(44,182,125,.4);}
-.review-dot{width:10px; height:10px; border-radius:50%;}
-.review-dot.due{background:var(--accent3); box-shadow:0 0 10px var(--accent3);}
-.review-dot.soon{background:var(--accent4); box-shadow:0 0 10px var(--accent4);}
-.review-dot.ok{background:var(--accent2); box-shadow:0 0 10px var(--accent2);}
-.review-title{font-size:14px; font-weight:600;}
-.review-sub{font-size:12px; color:var(--text-dim); margin-top:2px;}
-.empty-state{text-align:center; color:var(--text-dim); font-size:13px; padding:30px 0;}
-
-/* ---------- Insights ---------- */
-.insight-card{padding:14px; margin-bottom:10px; font-size:13px; line-height:1.8;}
-
-/* ---------- Tab bar ---------- */
-.tab-bar{
-  position:fixed; bottom:0; inset-inline:0; z-index:50;
-  padding-bottom:calc(10px + env(safe-area-inset-bottom));
-  padding-top:10px;
-  background:rgba(10,15,24,.75);
-  backdrop-filter: blur(20px) saturate(160%);
-  -webkit-backdrop-filter: blur(20px) saturate(160%);
-  border-top:1px solid var(--glass-border);
+.card{
+  background:var(--card-bg);
+  border-radius:16px;
+  padding:18px;
+  box-shadow:var(--shadow);
+  border:1px solid rgba(11,31,58,0.05);
 }
-.tab-bar-inner{max-width:480px; margin:0 auto; display:flex;}
-.tab-btn{flex:1; text-align:center; background:none; border:none; color:var(--text-dim);
-  font-size:11px; display:flex; flex-direction:column; align-items:center; gap:4px; padding:4px;}
-.tab-btn .ic{font-size:20px;}
-.tab-btn.active{color:var(--accent1); text-shadow:0 0 10px var(--accent1-glow);}
-
-.tab-content{display:none;}
-.tab-content.active{display:block; animation:fadeIn .25s ease;}
-@keyframes fadeIn{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);}}
-
-/* ---------- FAB ---------- */
-.fab{
-  position:fixed; bottom:calc(78px + env(safe-area-inset-bottom)); inset-inline-end:20px; z-index:40;
-  width:56px; height:56px; border-radius:50%; border:none;
-  background:linear-gradient(135deg, var(--accent1), #7ad4ff);
-  color:#00131f; font-size:26px; display:flex; align-items:center; justify-content:center;
-  box-shadow:0 6px 24px var(--accent1-glow);
+.card-title{
+  font-size:14px; font-weight:bold; color:var(--navy);
+  margin-bottom:12px; display:flex; align-items:center; gap:6px;
 }
+.card-title .dot{ width:8px; height:8px; border-radius:50%; background:var(--med-green); }
 
-/* ---------- Modals ---------- */
+.stat-card{
+  background:linear-gradient(135deg, var(--navy), var(--navy-lighter));
+  color:#fff; border-radius:16px; padding:18px;
+  position:relative; overflow:hidden;
+}
+.stat-card .num{ font-size:26px; font-weight:bold; }
+.stat-card .lbl{ font-size:12px; opacity:.8; margin-top:4px; }
+.stat-card.green{ background:linear-gradient(135deg, var(--med-green), #0a6650); }
+.stat-card.gold{ background:linear-gradient(135deg,#b8912e, #8f6f1f); }
+.stat-card.red{ background:linear-gradient(135deg,#c74650,#8f2a32); }
+
+.btn{
+  background:var(--med-green); color:#fff; border:none;
+  padding:10px 18px; border-radius:10px; cursor:pointer;
+  font-family:inherit; font-size:13px; font-weight:bold;
+  transition:.2s;
+}
+.btn:hover{ background:var(--med-green-light); }
+.btn.secondary{ background:var(--navy-light); }
+.btn.danger{ background:var(--red); }
+.btn.outline{ background:transparent; border:1px solid var(--med-green); color:var(--med-green); }
+.btn.small{ padding:6px 12px; font-size:12px; }
+.btn:disabled{ opacity:.5; cursor:not-allowed; }
+
+label{ font-size:12px; color:var(--navy); font-weight:bold; display:block; margin-bottom:5px; margin-top:12px; }
+input, select, textarea{
+  width:100%; padding:9px 10px; border-radius:8px;
+  border:1px solid #d5dce5; font-family:inherit; font-size:13px;
+  background:#fbfcfe;
+}
+input:focus, select:focus, textarea:focus{ outline:none; border-color:var(--med-green); }
+textarea{ resize:vertical; min-height:60px; }
+
+.range-row{ display:flex; align-items:center; gap:10px; }
+.range-row input[type=range]{ flex:1; }
+.range-val{ font-weight:bold; color:var(--med-green); min-width:24px; text-align:center; }
+
+.pill{
+  display:inline-block; padding:3px 10px; border-radius:20px;
+  font-size:11px; font-weight:bold;
+}
+.pill.green{ background:#e3f7f1; color:var(--med-green); }
+.pill.red{ background:#fce9ea; color:var(--red); }
+.pill.gold{ background:#faf3dd; color:#8f6f1f; }
+.pill.gray{ background:#eef1f5; color:var(--gray); }
+
+table{ width:100%; border-collapse:collapse; font-size:13px; }
+th, td{ padding:9px 8px; text-align:right; border-bottom:1px solid #eef1f5; }
+th{ color:var(--gray); font-weight:bold; font-size:12px; }
+tr:hover td{ background:#fafcfe; }
+
+.progress-bar{ height:8px; background:#eef1f5; border-radius:6px; overflow:hidden; }
+.progress-bar .fill{ height:100%; background:var(--med-green); border-radius:6px; transition:.4s; }
+.progress-bar .fill.gold{ background:var(--gold); }
+.progress-bar .fill.red{ background:var(--red); }
+
+.badge-item{
+  display:flex; align-items:center; gap:10px;
+  padding:12px; border-radius:12px; background:#fafcfe;
+  border:1px solid #eef1f5;
+}
+.badge-item.locked{ opacity:.4; filter:grayscale(1); }
+.badge-icon{
+  width:42px; height:42px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  background:linear-gradient(135deg,var(--gold),#8f6f1f);
+  font-size:20px; flex-shrink:0;
+}
+.toast{
+  position:fixed; bottom:20px; left:50%; transform:translateX(-50%);
+  background:var(--navy); color:#fff; padding:12px 22px; border-radius:12px;
+  font-size:13px; box-shadow:var(--shadow); z-index:999;
+  opacity:0; pointer-events:none; transition:.3s;
+}
+.toast.show{ opacity:1; transform:translateX(-50%) translateY(-8px); }
+
+.motiv-box{
+  background:linear-gradient(135deg,var(--med-green),#0a6650);
+  color:#fff; padding:16px 18px; border-radius:14px; font-size:13px;
+  line-height:1.9; margin-bottom:16px;
+}
 .modal-overlay{
-  position:fixed; inset:0; background:rgba(0,0,0,.55); backdrop-filter:blur(4px);
-  display:none; align-items:flex-end; z-index:100;
+  position:fixed; inset:0; background:rgba(11,31,58,0.5);
+  display:none; align-items:center; justify-content:center; z-index:1000;
 }
-.modal-overlay.open{display:flex;}
-.modal-sheet{
-  width:100%; max-width:480px; margin:0 auto;
-  background:var(--bg2); border:1px solid var(--glass-border);
-  border-radius:24px 24px 0 0; padding:14px 20px calc(24px + env(safe-area-inset-bottom));
-  box-shadow:0 -10px 40px rgba(0,0,0,.5);
-  animation:slideUp .25s ease;
+.modal-overlay.show{ display:flex; }
+.modal-box{
+  background:#fff; border-radius:16px; padding:20px; width:90%; max-width:420px;
+  max-height:85vh; overflow:auto;
 }
-@keyframes slideUp{from{transform:translateY(100%);} to{transform:translateY(0);}}
-.modal-handle{width:40px; height:4px; background:var(--glass-border); border-radius:4px; margin:0 auto 16px;}
-.modal-title{font-size:16px; font-weight:700; margin-bottom:16px;}
-.form-group{margin-bottom:12px;}
-.form-group label{display:block; font-size:12px; color:var(--text-dim); margin-bottom:6px;}
-.form-row{display:flex; gap:10px;}
-.form-row .form-group{flex:1;}
-input, select{
-  width:100%; padding:12px; border-radius:12px; border:1px solid var(--glass-border);
-  background:rgba(255,255,255,.04); color:var(--text); font-size:14px; outline:none;
+.tabs{ display:flex; gap:6px; margin-bottom:16px; flex-wrap:wrap; }
+.tab-btn{
+  padding:8px 14px; border-radius:8px; background:#eef1f5; cursor:pointer;
+  font-size:12px; font-weight:bold; color:var(--navy);
 }
-input:focus, select:focus{border-color:var(--accent1); box-shadow:0 0 0 3px var(--accent1-glow);}
-.modal-btn{
-  width:100%; padding:14px; border:none; border-radius:14px; font-size:14px; font-weight:700;
-  margin-top:8px; background:linear-gradient(135deg, var(--accent1), #7ad4ff); color:#00131f;
+.tab-btn.active{ background:var(--navy); color:#fff; }
+.hr{ height:1px; background:#eef1f5; margin:14px 0; }
+.flex-between{ display:flex; align-items:center; justify-content:space-between; }
+.small-text{ font-size:12px; color:var(--gray); }
+.level-badge{
+  display:inline-flex; align-items:center; gap:6px;
+  background:rgba(255,255,255,0.15); padding:4px 12px; border-radius:20px;
+  font-size:12px; margin-top:6px;
 }
-.modal-btn.secondary{background:rgba(255,255,255,.06); color:var(--text);}
-.modal-btn.danger{background:rgba(255,107,107,.15); color:var(--accent3); border:1px solid rgba(255,107,107,.4);}
-.color-picker{display:flex; gap:10px; flex-wrap:wrap;}
-.color-dot{width:32px; height:32px; border-radius:50%; cursor:pointer; border:2px solid transparent;}
-.color-dot.selected{border-color:#fff; box-shadow:0 0 10px #fff;}
+#toastContainer{ position:fixed; bottom:0; left:0; right:0; z-index:999; }
+.close-x{ cursor:pointer; font-size:18px; color:var(--gray); }
+.checkbox-row{ display:flex; align-items:center; gap:8px; margin-top:8px; }
+.checkbox-row input{ width:auto; }
+.empty-state{ text-align:center; padding:30px; color:var(--gray); font-size:13px; }
+canvas{ max-width:100%; }
 </style>
 </head>
 <body>
-
-<div class="app">
-  <div class="header">
-    <h1>مسیر تخصص</h1>
-    <div class="level-badge" id="levelBadge">سطح ۱</div>
+<div id="app">
+  <div id="sidebar">
+    <div class="logo"><span class="pulse"></span><span class="text">🩺 رزیدنت‌یار</span></div>
+    <div class="nav-item active" data-page="dashboard"><span class="icon">📊</span><span class="label">داشبورد</span></div>
+    <div class="nav-item" data-page="addStudy"><span class="icon">📖</span><span class="label">ثبت مطالعه</span></div>
+    <div class="nav-item" data-page="addTest"><span class="icon">📝</span><span class="label">ثبت تست</span></div>
+    <div class="nav-item" data-page="planner"><span class="icon">🗓️</span><span class="label">برنامه‌ریز</span></div>
+    <div class="nav-item" data-page="reviews"><span class="icon">🔄</span><span class="label">مرورها</span></div>
+    <div class="nav-item" data-page="mistakes"><span class="icon">❌</span><span class="label">دفترچه غلط‌ها</span></div>
+    <div class="nav-item" data-page="analytics"><span class="icon">📈</span><span class="label">تحلیل</span></div>
+    <div class="nav-item" data-page="gamify"><span class="icon">🏆</span><span class="label">سطح و نشان‌ها</span></div>
+    <div class="nav-item" data-page="wellness"><span class="icon">💤</span><span class="label">سلامت و انرژی</span></div>
+    <div class="nav-item" data-page="motivation"><span class="icon">🔥</span><span class="label">انگیزشی</span></div>
+    <div class="nav-item" data-page="settings"><span class="icon">⚙️</span><span class="label">تنظیمات</span></div>
+    <div class="footer-info label">رزیدنت‌یار v1.0<br>ساخته‌شده برای آزمون تخصص</div>
   </div>
 
-  <!-- HOME -->
-  <div class="tab-content active" id="tab-home">
-    <div class="stats-row" id="homeStats"></div>
-    <div id="topAlertsHome"></div>
-
-    <div class="section-title">🏅 مدال‌ها</div>
-    <div class="badges-row" id="badgesRow"></div>
-
-    <div class="section-title">📚 درس‌ها</div>
-    <div id="subjectsList"></div>
-  </div>
-
-  <!-- REVIEW -->
-  <div class="tab-content" id="tab-review">
-    <div class="section-title">⏰ نیاز به مرور فوری</div>
-    <div id="urgentReviews"></div>
-
-    <div class="section-title">🔜 مرورهای پیش‌رو</div>
-    <div id="upcomingReviews"></div>
-
-    <div class="section-title">✅ به‌روز و مرورشده</div>
-    <div id="okReviews"></div>
-  </div>
-
-  <!-- INSIGHTS -->
-  <div class="tab-content" id="tab-insights">
-    <div class="section-title">📊 تحلیل هوشمند عملکرد</div>
-    <div id="insightsList"></div>
-  </div>
-</div>
-
-<button class="fab" onclick="openModal('logModal')">＋</button>
-
-<div class="tab-bar">
-  <div class="tab-bar-inner">
-    <button class="tab-btn active" onclick="switchTabProgrammatic('home')"><span class="ic">🏠</span>خانه</button>
-    <button class="tab-btn" onclick="switchTabProgrammatic('review')"><span class="ic">🔄</span>مرورها</button>
-    <button class="tab-btn" onclick="switchTabProgrammatic('insights')"><span class="ic">📊</span>تحلیل</button>
+  <div id="main">
+    <!-- DASHBOARD -->
+    <div class="page active" id="page-dashboard"></div>
+    <!-- ADD STUDY -->
+    <div class="page" id="page-addStudy"></div>
+    <!-- ADD TEST -->
+    <div class="page" id="page-addTest"></div>
+    <!-- PLANNER -->
+    <div class="page" id="page-planner"></div>
+    <!-- REVIEWS -->
+    <div class="page" id="page-reviews"></div>
+    <!-- MISTAKES -->
+    <div class="page" id="page-mistakes"></div>
+    <!-- ANALYTICS -->
+    <div class="page" id="page-analytics"></div>
+    <!-- GAMIFY -->
+    <div class="page" id="page-gamify"></div>
+    <!-- WELLNESS -->
+    <div class="page" id="page-wellness"></div>
+    <!-- MOTIVATION -->
+    <div class="page" id="page-motivation"></div>
+    <!-- SETTINGS -->
+    <div class="page" id="page-settings"></div>
   </div>
 </div>
 
-<!-- Log Study Modal -->
-<div class="modal-overlay" id="logModal">
-  <div class="modal-sheet">
-    <div class="modal-handle"></div>
-    <div class="modal-title">ثبت مطالعه امروز</div>
-    <div class="form-group">
-      <label>انتخاب درس</label>
-      <select id="logSubjectSelect"></select>
-    </div>
-    <div class="form-group">
-      <label>نام مبحث (برای پیگیری مرور)</label>
-      <input type="text" id="logTopicName" placeholder="مثلاً: نارسایی قلبی">
-    </div>
-    <div class="form-row">
-      <div class="form-group">
-        <label>نوع فعالیت</label>
-        <select id="logActivityType">
-          <option value="read">مطالعه اولیه 📖</option>
-          <option value="test">تست‌زنی 📝</option>
-          <option value="review">مرور 🔄</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>ساعت مطالعه</label>
-        <input type="number" id="logHours" placeholder="مثلاً 3.5" step="0.25" min="0">
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="form-group">
-        <label>تعداد تست</label>
-        <input type="number" id="logTests" placeholder="مثلاً 40" min="0">
-      </div>
-      <div class="form-group">
-        <label>تست صحیح</label>
-        <input type="number" id="logCorrect" placeholder="مثلاً 30" min="0">
-      </div>
-    </div>
-    <button class="modal-btn" onclick="saveLog()">ثبت و دریافت امتیاز</button>
-    <button class="modal-btn secondary" onclick="closeModal('logModal')">انصراف</button>
-  </div>
+<div id="toastContainer"></div>
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal-box" id="modalBox"></div>
 </div>
 
-<!-- Add Subject Modal -->
-<div class="modal-overlay" id="subjectModal">
-  <div class="modal-sheet">
-    <div class="modal-handle"></div>
-    <div class="modal-title">افزودن درس جدید</div>
-    <div class="form-group">
-      <label>نام درس</label>
-      <input type="text" id="subjectNameInput" placeholder="مثلاً: قلب و عروق">
-    </div>
-    <div class="form-group">
-      <label>رنگ درس</label>
-      <div class="color-picker" id="colorPicker"></div>
-    </div>
-    <button class="modal-btn" onclick="saveSubject()">افزودن درس</button>
-    <button class="modal-btn secondary" onclick="closeModal('subjectModal')">انصراف</button>
-  </div>
-</div>
-
-<!-- Subject Detail Modal -->
-<div class="modal-overlay" id="detailModal">
-  <div class="modal-sheet">
-    <div class="modal-handle"></div>
-    <div class="modal-title" id="detailTitle">جزئیات درس</div>
-    <div id="detailStats" class="stats-row" style="margin-bottom:16px;"></div>
-    <div class="section-title" style="margin-top:0;">مباحث و وضعیت مرور</div>
-    <div id="detailTopics"></div>
-    <div class="section-title">تاریخچه اخیر</div>
-    <div id="detailHistory"></div>
-    <button class="modal-btn danger" onclick="deleteSubject()">حذف این درس</button>
-    <button class="modal-btn secondary" onclick="closeModal('detailModal')">بستن</button>
-  </div>
-</div>
-
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
 <script>
-/* ================= DATA MODEL ================= */
-const STORAGE_KEY = 'medExamTracker_v2';
-const COLORS = ['#2E9EFF','#2CB67D','#FF6B6B','#FFD803','#4ECDC4','#7ad4ff','#FF8FA3','#B388FF'];
-const REVIEW_INTERVALS = [1,3,7,16,30];
-const BADGE_DEFS = [
-  {id:'first', icon:'🎯', name:'اولین قدم', check: d => getAllLogsFlat().length >= 1},
-  {id:'streak7', icon:'🔥', name:'۷ روز پیاپی', check: d => d.streak >= 7},
-  {id:'streak30', icon:'⚡', name:'۳۰ روز پیاپی', check: d => d.streak >= 30},
-  {id:'hours50', icon:'📚', name:'۵۰ ساعت', check: d => getTotalHours() >= 50},
-  {id:'hours200', icon:'🏆', name:'۲۰۰ ساعت', check: d => getTotalHours() >= 200},
-  {id:'level10', icon:'⭐', name:'سطح ۱۰', check: d => getLevel(getTotalXP()) >= 10},
-  {id:'reviewer', icon:'🔄', name:'اهل مرور', check: d => getAllLogsFlat().filter(l=>l.type==='review').length >= 10},
-  {id:'subjects3', icon:'🧩', name:'۳ درس فعال', check: d => d.subjects.length >= 3},
+/* ================== CONSTANTS ================== */
+const ACTIVITY_WEIGHTS = {
+  "تحلیل تست": 1.5,
+  "تست آموزشی": 1.4,
+  "تست زمان‌دار": 1.4,
+  "مطالعه مفهومی": 1.2,
+  "خلاصه‌نویسی": 1.1,
+  "ویدیو": 0.9,
+  "مرور": 1.0,
+  "مرور منفعل": 0.6
+};
+
+const MISTAKE_REASONS = ["بلد نبودم","بی‌دقتی","شک","کمبود زمان","اشتباه مفهومی","فراموشی"];
+const TEST_TYPES = ["آموزشی","زمان‌دار","آزمون جامع","شبیه‌ساز"];
+const ACTIVITY_TYPES = Object.keys(ACTIVITY_WEIGHTS);
+
+const REVIEW_SCHEDULE = [
+  {days:1,  type:"مرور نکات",              n:1},
+  {days:3,  type:"تست آموزشی",             n:2},
+  {days:7,  type:"بازیابی فعال بدون نگاه",  n:3},
+  {days:14, type:"تست زمان‌دار",            n:4},
+  {days:30, type:"مرور خلاصه",             n:5},
+  {days:60, type:"آزمون ترکیبی",           n:6}
 ];
 
-let selectedColor = COLORS[0];
-let activeSubjectId = null;
+const LEVELS = [
+  {name:"Intern", min:0},
+  {name:"Junior Resident", min:500},
+  {name:"Senior Resident", min:1500},
+  {name:"Chief Resident", min:3500},
+  {name:"Attending", min:7000},
+  {name:"Consultant", min:12000},
+  {name:"Master Clinician", min:20000}
+];
 
-function loadData(){
-  const raw = localStorage.getItem(STORAGE_KEY);
-  if(raw) return JSON.parse(raw);
-  return { subjects: [], streak: 0, lastLogDate: null, xp: 0 };
-}
-let data = loadData();
-function saveData(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }
+const BADGE_DEFS = [
+  {id:"iron_heart", title:"قلب آهنی", desc:"۷ روز مطالعه پشت‌سرهم", icon:"❤️",
+    check: d => d.maxStreak >= 7},
+  {id:"test_master", title:"استاد تست", desc:"۱۰۰۰ تست حل‌شده", icon:"🎯",
+    check: d => d.totalTests >= 1000},
+  {id:"comeback", title:"احیاگر روز خراب", desc:"جبران عقب‌افتادگی", icon:"🔋",
+    check: d => d.comebackCount >= 1},
+  {id:"error_hunter", title:"شکارچی خطا", desc:"۱۰۰ نکته در دفترچه غلط‌ها", icon:"🔍",
+    check: d => d.totalMistakes >= 100},
+  {id:"night_resident", title:"رزیدنت شب‌زنده‌دار", desc:"عملکرد خوب بعد از روز سخت", icon:"🌙",
+    check: d => d.nightSaveCount >= 1},
+  {id:"review_specialist", title:"متخصص مرور", desc:"۳۰ مرور موفق", icon:"🔄",
+    check: d => d.completedReviews >= 30}
+];
 
-/* ================= HELPERS ================= */
-function todayStr(){ return new Date().toISOString().slice(0,10); }
-function daysBetween(a,b){
-  if(!a) return 999;
-  return Math.round((new Date(b) - new Date(a)) / 86400000);
-}
-function toFa(n){ return String(n).replace(/[0-9]/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]); }
+const PHASES = [
+  {name:"فاز ۱: پایه‌سازی", minDays:270, ratio:{study:0.7, test:0.2, review:0.1}},
+  {name:"فاز ۲: تثبیت و تست", minDays:180, ratio:{study:0.4, test:0.4, review:0.2}},
+  {name:"فاز ۳: جمع‌بندی پیشرفته", minDays:60, ratio:{study:0.2, test:0.5, review:0.3}},
+  {name:"فاز ۴: فاز نهایی", minDays:0, ratio:{study:0.1, test:0.5, review:0.4}}
+];
 
-function getAllLogsFlat(){
-  let logs = [];
-  data.subjects.forEach(s => (s.logs||[]).forEach(l => logs.push({...l, subjectId:s.id})));
-  return logs;
-}
-function getTotalHours(){ return getAllLogsFlat().reduce((s,l)=>s+(l.hours||0),0); }
-function getTotalXP(){ return data.xp || 0; }
-function getLevel(xp){ return Math.floor(xp/200) + 1; }
+const MOTIV_MESSAGES = {
+  ahead: ["تو امروز از دیروزت جلو زدی. همین‌طور ادامه بده.", "یک قدم جلوتر از دیروز، یک قدم نزدیک‌تر به قبولی."],
+  behind: ["برای شکست دیروز فقط چند دقیقه بیشتر لازم است.", "هنوز وقت هست جبران کنی. یک بلوک دیگه بزن."],
+  streak: ["استریک تو داره هویتت رو می‌سازه. رزیدنتی که هر روز کار می‌کنه.", "پشتکار تو الان بخشی از شخصیتته."],
+  examClose: ["نزدیک آزمون: تست و مرور، نه مطالعه جدید.", "این روزها هر تست، یک قدم به سمت قبولیه."],
+  general: ["هیچ روزی صفر نیست. حتی ۲۰ دقیقه ارزش دارد.", "یک صفحه بیشتر → یک تصمیم بالینی بهتر.", "تو امروز فقط باید از دیروزت جلو بزنی."]
+};
 
-/* ================= REVIEW ENGINE (file-confirmed) ================= */
-function getTopicReviewStatus(topic){
-  const daysSinceLast = daysBetween(topic.lastActivity, todayStr());
-  const reviewCount = topic.reviewsDone.length;
-  const nextIntervalIdx = Math.min(reviewCount, REVIEW_INTERVALS.length - 1);
-  const nextIntervalTarget = REVIEW_INTERVALS[nextIntervalIdx];
-  const daysUntilDue = nextIntervalTarget - daysSinceLast;
-  let status = 'ok';
-  if(daysUntilDue <= 0) status = 'due';
-  else if(daysUntilDue <= 2) status = 'soon';
-  return { daysSinceLast, reviewCount, nextIntervalTarget, daysUntilDue, status, maxedOut: reviewCount >= REVIEW_INTERVALS.length };
+/* ================== DEFAULT SUBJECTS ================== */
+const DEFAULT_SUBJECTS = [
+  {id:"s1", name:"داخلی", weight:1, priority:"بالا", color:"#0e8a6d"},
+  {id:"s2", name:"جراحی", weight:1, priority:"بالا", color:"#1c3a63"},
+  {id:"s3", name:"اطفال", weight:0.8, priority:"متوسط", color:"#d4af37"},
+  {id:"s4", name:"زنان", weight:0.8, priority:"متوسط", color:"#e2626b"},
+  {id:"s5", name:"روانپزشکی", weight:0.6, priority:"پایین", color:"#8a95a5"}
+];
+
+/* ================== STORAGE ================== */
+const DB_KEY = "residentAppDB_v1";
+
+function defaultDB(){
+  return {
+    user:{
+      name:"کاربر",
+      examDate: null, // ISO date string
+      targetDailyHours: 6,
+      createdAt: todayStr()
+    },
+    subjects: JSON.parse(JSON.stringify(DEFAULT_SUBJECTS)),
+    topics: [],
+    studySessions: [],
+    testSessions: [],
+    mistakes: [],
+    reviews: [],
+    dailyLogs: [],
+    achievements: [],
+    meta:{
+      comebackCount:0,
+      nightSaveCount:0,
+      lastBehindHours:0
+    }
+  };
 }
-function getAllTopicsFlat(){
-  let topics = [];
-  data.subjects.forEach(s => {
-    if(!s.topics) return;
-    Object.keys(s.topics).forEach(tName => {
-      const status = getTopicReviewStatus(s.topics[tName]);
-      topics.push({ name: tName, subjectId: s.id, subjectName: s.name, subjectColor: s.color, ...s.topics[tName], ...status });
+
+let DB = loadDB();
+
+function loadDB(){
+  try{
+    const raw = localStorage.getItem(DB_KEY);
+    if(!raw) return defaultDB();
+    const parsed = JSON.parse(raw);
+    // merge missing fields for forward-compatibility
+    const def = defaultDB();
+    return Object.assign(def, parsed, {
+      user: Object.assign(def.user, parsed.user||{}),
+      meta: Object.assign(def.meta, parsed.meta||{})
+    });
+  }catch(e){ return defaultDB(); }
+}
+
+function saveDB(){
+  localStorage.setItem(DB_KEY, JSON.stringify(DB));
+}
+
+/* ================== UTILITIES ================== */
+function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,8); }
+
+function todayStr(d=new Date()){
+  return d.toISOString().slice(0,10);
+}
+
+function addDays(dateStr, days){
+  const d = new Date(dateStr);
+  d.setDate(d.getDate()+days);
+  return todayStr(d);
+}
+
+function daysBetween(dateA, dateB){
+  const a = new Date(dateA), b = new Date(dateB);
+  return Math.round((b-a)/(1000*60*60*24));
+}
+
+function daysToExam(){
+  if(!DB.user.examDate) return 365;
+  const d = daysBetween(todayStr(), DB.user.examDate);
+  return d;
+}
+
+function getCurrentPhase(){
+  const d = daysToExam();
+  for(const p of PHASES){ if(d >= p.minDays) return p; }
+  return PHASES[PHASES.length-1];
+}
+
+function toast(msg, type="info"){
+  const el = document.createElement("div");
+  el.className = "toast";
+  el.textContent = msg;
+  document.getElementById("toastContainer").appendChild(el);
+  requestAnimationFrame(()=>el.classList.add("show"));
+  setTimeout(()=>{ el.classList.remove("show"); setTimeout(()=>el.remove(),300); }, 3200);
+}
+
+function openModal(html){
+  document.getElementById("modalBox").innerHTML = html;
+  document.getElementById("modalOverlay").classList.add("show");
+}
+function closeModal(){
+  document.getElementById("modalOverlay").classList.remove("show");
+}
+document.getElementById("modalOverlay").addEventListener("click", e=>{
+  if(e.target.id === "modalOverlay") closeModal();
+});
+
+function subjectName(id){
+  const s = DB.subjects.find(x=>x.id===id);
+  return s ? s.name : "-";
+}
+function subjectColor(id){
+  const s = DB.subjects.find(x=>x.id===id);
+  return s ? s.color : "#8a95a5";
+}
+
+/* ================== CORE: STUDY VALUE ================== */
+function computeStudyValue(durationMin, activityType, focusScore){
+  const weight = ACTIVITY_WEIGHTS[activityType] || 1;
+  return (durationMin/60) * weight * focusScore;
+}
+
+/* ================== CORE: ADD STUDY SESSION ================== */
+function addStudySession(data){
+  const session = {
+    id: uid(),
+    userId:"u1",
+    subjectId: data.subjectId,
+    topicId: data.topicId || null,
+    topicName: data.topicName || "",
+    activityType: data.activityType,
+    durationMinutes: Number(data.durationMinutes),
+    focusScore: Number(data.focusScore),
+    energyScore: Number(data.energyScore),
+    testsCount: Number(data.testsCount)||0,
+    notes: data.notes || "",
+    createdAt: new Date().toISOString(),
+    date: todayStr()
+  };
+  session.value = computeStudyValue(session.durationMinutes, session.activityType, session.focusScore);
+  DB.studySessions.push(session);
+
+  // auto-generate spaced repetition reviews if it's a "study" type activity (not itself a review)
+  if(["مطالعه مفهومی","خلاصه‌نویسی","ویدیو"].includes(session.activityType) && session.topicName){
+    generateReviewsForTopic(session.subjectId, session.topicName);
+  }
+  saveDB();
+  return session;
+}
+
+/* ================== CORE: SPACED REPETITION GENERATION ================== */
+function generateReviewsForTopic(subjectId, topicName){
+  // avoid duplicate scheduling for same topic+subject if already has pending reviews
+  const exists = DB.reviews.some(r => r.subjectId===subjectId && r.topicName===topicName && r.status==="pending");
+  if(exists) return;
+
+  REVIEW_SCHEDULE.forEach(sch=>{
+    DB.reviews.push({
+      id: uid(),
+      userId:"u1",
+      subjectId,
+      topicName,
+      reviewType: sch.type,
+      scheduledDate: addDays(todayStr(), sch.days),
+      completedDate: null,
+      status: "pending",
+      intervalNumber: sch.n
     });
   });
-  return topics;
 }
 
-/* ================= RENDER: HOME ================= */
-function renderHomeStats(){
-  const el = document.getElementById('homeStats');
-  el.innerHTML = `
-    <div class="glass stat-card"><div class="num">${toFa(data.streak||0)}</div><div class="lbl">روز پیاپی 🔥</div></div>
-    <div class="glass stat-card"><div class="num">${toFa(Math.round(getTotalHours()))}</div><div class="lbl">ساعت مطالعه</div></div>
-    <div class="glass stat-card"><div class="num">${toFa(getLevel(getTotalXP()))}</div><div class="lbl">سطح</div></div>
-  `;
-  document.getElementById('levelBadge').textContent = 'سطح ' + toFa(getLevel(getTotalXP()));
+function completeReview(reviewId, success=true){
+  const r = DB.reviews.find(x=>x.id===reviewId);
+  if(!r) return;
+  r.status = "done";
+  r.completedDate = todayStr();
+  saveDB();
+  toast("مرور با موفقیت ثبت شد ✅");
+  checkBadges();
 }
-function renderHomeAlerts(){
-  const topics = getAllTopicsFlat();
-  const dueTopics = topics.filter(t => t.status === 'due').slice(0,2);
-  const container = document.getElementById('topAlertsHome');
-  container.innerHTML = '';
-  if(dueTopics.length > 0){
-    dueTopics.forEach(t => {
-      const div = document.createElement('div');
-      div.className = 'glass alert-card urgent';
-      div.onclick = () => { switchTabProgrammatic('review'); };
-      div.innerHTML = `
-        <div class="alert-icon">⏰</div>
-        <div class="alert-body">
-          <div class="alert-title">مرور «${t.name}» عقب افتاده</div>
-          <div class="alert-sub">${t.subjectName} • ${toFa(t.daysSinceLast)} روز از آخرین بار</div>
-        </div>
-        <div class="alert-badge">فوری</div>
-      `;
-      container.appendChild(div);
-    });
-  }
-  const burnout = checkBurnout();
-  if(burnout){
-    const div = document.createElement('div');
-    div.className = 'glass alert-card info';
-    div.innerHTML = `
-      <div class="alert-icon">😮‍💨</div>
-      <div class="alert-body">
-        <div class="alert-title">هشدار خستگی ذهنی</div>
-        <div class="alert-sub">${burnout}</div>
-      </div>
-    `;
-    container.appendChild(div);
-  }
+
+function getDueReviewsToday(){
+  const t = todayStr();
+  return DB.reviews.filter(r => r.status==="pending" && r.scheduledDate <= t)
+    .sort((a,b)=> a.scheduledDate.localeCompare(b.scheduledDate));
 }
-function checkBurnout(){
-  const all = getAllLogsFlat();
-  const last3Days = [];
-  for(let i=0;i<3;i++){
-    const d = new Date(Date.now()-i*86400000).toISOString().slice(0,10);
-    last3Days.push(d);
+
+/* ================== CORE: TEST SESSION ================== */
+function addTestSession(data){
+  const total = Number(data.totalQuestions);
+  const correct = Number(data.correct);
+  const wrong = Number(data.wrong);
+  const empty = total - correct - wrong;
+  const session = {
+    id: uid(),
+    userId:"u1",
+    subjectId: data.subjectId,
+    topicName: data.topicName || "",
+    testType: data.testType,
+    totalQuestions: total,
+    correct, wrong,
+    empty: empty>0?empty:0,
+    percent: total>0 ? Math.round((correct/total)*100) : 0,
+    durationMinutes: Number(data.durationMinutes)||0,
+    createdAt: new Date().toISOString(),
+    date: todayStr()
+  };
+  DB.testSessions.push(session);
+  saveDB();
+  return session;
+}
+
+function addMistake(data){
+  const m = {
+    id: uid(),
+    testSessionId: data.testSessionId || null,
+    subjectId: data.subjectId,
+    topicName: data.topicName || "",
+    reason: data.reason,
+    note: data.note || "",
+    importance: data.importance || "متوسط",
+    nextReviewDate: addDays(todayStr(),1),
+    resolved:false,
+    createdAt: new Date().toISOString()
+  };
+  DB.mistakes.push(m);
+  // feed into review system too
+  if(m.topicName) generateReviewsForTopic(m.subjectId, m.topicName);
+  saveDB();
+  return m;
+}
+
+/* ================== CORE: DAILY SCORE ================== */
+function getSessionsForDate(dateStr){
+  return DB.studySessions.filter(s=>s.date===dateStr);
+}
+function getTestsForDate(dateStr){
+  return DB.testSessions.filter(s=>s.date===dateStr);
+}
+function getReviewsCompletedForDate(dateStr){
+  return DB.reviews.filter(r=>r.completedDate===dateStr);
+}
+
+function computeDailyScore(dateStr){
+  const sessions = getSessionsForDate(dateStr);
+  const tests = getTestsForDate(dateStr);
+  const reviewsDone = getReviewsCompletedForDate(dateStr);
+
+  const effectiveHours = sessions.reduce((sum,s)=>sum + (s.durationMinutes/60)*(ACTIVITY_WEIGHTS[s.activityType]||1),0);
+  const testCount = tests.reduce((sum,t)=>sum+t.totalQuestions,0) + sessions.reduce((sum,s)=>sum+(s.testsCount||0),0);
+  const reviewCount = reviewsDone.length;
+  const avgFocus = sessions.length ? sessions.reduce((sum,s)=>sum+s.focusScore,0)/sessions.length : 0;
+
+  // penalty for overdue (pending) reviews scheduled before today and not done
+  const overdue = DB.reviews.filter(r=>r.status==="pending" && r.scheduledDate < dateStr).length;
+  const penalty = overdue * 2;
+
+  const score = (effectiveHours*10) + (testCount*0.5) + (reviewCount*5) + (avgFocus*5) - penalty;
+  return {
+    score: Math.max(0, Math.round(score*10)/10),
+    effectiveHours: Math.round(effectiveHours*100)/100,
+    testCount, reviewCount, avgFocus: Math.round(avgFocus*10)/10, overdue
+  };
+}
+
+/* ================== CORE: STREAK ================== */
+function computeStreak(){
+  let streak = 0;
+  let d = todayStr();
+  // if today has no sessions yet, start checking from yesterday for current streak baseline
+  while(true){
+    const has = getSessionsForDate(d).length > 0;
+    if(!has){
+      if(d === todayStr()){ d = addDays(d,-1); continue; } // allow today to be empty so far
+      break;
+    }
+    streak++;
+    d = addDays(d,-1);
   }
-  const recentLogs = all.filter(l => last3Days.includes(l.date));
-  if(recentLogs.length < 3) return null;
-  const recentHours = recentLogs.reduce((s,l)=>s+l.hours,0);
-  const recentTests = recentLogs.reduce((s,l)=>s+l.tests,0);
-  const recentCorrect = recentLogs.reduce((s,l)=>s+l.correct,0);
-  const recentAcc = recentTests > 0 ? (recentCorrect/recentTests*100) : 100;
-  const avgHoursPerDay = recentHours / 3;
-  if(avgHoursPerDay >= 7 && recentAcc < 65){
-    return `۳ روزه بیش از ${avgHoursPerDay.toFixed(1)} ساعت در روز می‌خونی ولی دقتت ${recentAcc.toFixed(0)}٪ شده. مغزت داره اشباع می‌شه — یه روز استراحت واقعی بگیر.`;
+  return streak;
+}
+
+function computeMaxStreak(){
+  // compute the longest historical streak across all study dates
+  const dates = [...new Set(DB.studySessions.map(s=>s.date))].sort();
+  if(dates.length===0) return 0;
+  let max=1, cur=1;
+  for(let i=1;i<dates.length;i++){
+    if(daysBetween(dates[i-1],dates[i])===1){ cur++; max=Math.max(max,cur); }
+    else cur=1;
+  }
+  return max;
+}
+
+/* ================== CORE: LEVEL & XP ================== */
+function totalXP(){
+  return DB.studySessions.reduce((s,x)=>s+x.value*10,0) + DB.testSessions.reduce((s,x)=>s+x.totalQuestions*0.5,0) + DB.reviews.filter(r=>r.status==="done").length*5;
+}
+function getLevel(){
+  const xp = totalXP();
+  let current = LEVELS[0];
+  let next = LEVELS[1];
+  for(let i=0;i<LEVELS.length;i++){
+    if(xp >= LEVELS[i].min){ current = LEVELS[i]; next = LEVELS[i+1] || null; }
+  }
+  return {current, next, xp};
+}
+
+/* ================== CORE: BADGES ================== */
+function checkBadges(){
+  const data = {
+    maxStreak: computeMaxStreak(),
+    totalTests: DB.testSessions.reduce((s,x)=>s+x.totalQuestions,0),
+    comebackCount: DB.meta.comebackCount,
+    totalMistakes: DB.mistakes.length,
+    nightSaveCount: DB.meta.nightSaveCount,
+    completedReviews: DB.reviews.filter(r=>r.status==="done").length
+  };
+  BADGE_DEFS.forEach(b=>{
+    const already = DB.achievements.some(a=>a.type===b.id);
+    if(!already && b.check(data)){
+      DB.achievements.push({id:uid(), userId:"u1", type:b.id, title:b.title, description:b.desc, unlockedAt:new Date().toISOString()});
+      toast("🏆 نشان جدید گرفتی: " + b.title);
+    }
+  });
+  saveDB();
+}
+
+/* ================== CORE: YESTERDAY COMPARISON ================== */
+function compareWithYesterday(){
+  const today = computeDailyScore(todayStr());
+  const yesterday = computeDailyScore(addDays(todayStr(),-1));
+  const diff = Math.round((today.score - yesterday.score)*10)/10;
+  return {today, yesterday, diff};
+}
+
+/* ================== CORE: DAILY LOG (wellness) ================== */
+function upsertDailyLog(data){
+  let log = DB.dailyLogs.find(l=>l.date===todayStr());
+  if(!log){
+    log = {id:uid(), userId:"u1", date:todayStr()};
+    DB.dailyLogs.push(log);
+  }
+  Object.assign(log, data);
+  log.dailyScore = computeDailyScore(todayStr()).score;
+  saveDB();
+  return log;
+}
+
+function getRecentLogs(n=7){
+  return DB.dailyLogs.slice(-n);
+}
+
+function checkFatigueWarning(){
+  const logs = getRecentLogs(3);
+  if(logs.length < 2) return null;
+  const lowSleep = logs.filter(l=>l.sleepHours < 6).length;
+  const lowScore = logs.filter(l=>l.dailyScore < 30).length;
+  if(lowSleep >= 2 && lowScore >= 2){
+    return "عملکرد تو افت کرده. امروز برنامه سبک‌تر انجام بده و یک استراحت واقعی داشته باش.";
   }
   return null;
 }
-function renderBadges(){
-  const row = document.getElementById('badgesRow');
-  row.innerHTML = '';
-  BADGE_DEFS.forEach(b => {
-    const unlocked = b.check(data);
-    const div = document.createElement('div');
-    div.className = 'glass badge-item ' + (unlocked ? 'unlocked' : 'locked');
-    div.innerHTML = `<span class="b-icon">${b.icon}</span>${b.name}`;
-    row.appendChild(div);
-  });
-}
-function renderSubjectsList(){
-  const el = document.getElementById('subjectsList');
-  el.innerHTML = '';
-  data.subjects.forEach(s => {
-    const hours = (s.logs||[]).reduce((a,l)=>a+(l.hours||0),0);
-    const div = document.createElement('div');
-    div.className = 'glass subject-card';
-    div.style.setProperty('--card-color', s.color);
-    div.onclick = () => openDetail(s.id);
-    div.innerHTML = `
-      <div class="subject-name">${s.name}</div>
-      <div class="subject-meta">${toFa(Math.round(hours))} ساعت مطالعه • ${toFa(Object.keys(s.topics||{}).length)} مبحث</div>
-      <div class="progress-bar"><div class="progress-fill" style="width:${Math.min(100,hours)}%"></div></div>
-    `;
-    el.appendChild(div);
-  });
-}
-function renderHome(){
-  renderHomeStats();
-  renderHomeAlerts();
-  renderBadges();
-  renderSubjectsList();
-}
-
-/* ================= RENDER: REVIEW TAB ================= */
-function renderReviewItem(t){
-  const div = document.createElement('div');
-  div.className = `glass review-item ${t.status}`;
-  div.onclick = () => openDetail(t.subjectId);
-  const subText = t.status === 'ok'
-    ? `${t.subjectName} • مرور بعدی تا ${toFa(t.daysUntilDue)} روز دیگر`
-    : `${t.subjectName} • ${toFa(t.daysSinceLast)} روز از آخرین بار`;
-  div.innerHTML = `
-    <div class="review-dot ${t.status}"></div>
-    <div>
-      <div class="review-title">${t.name}</div>
-      <div class="review-sub">${subText}</div>
-    </div>
-  `;
-  return div;
-}
-function renderReviewTab(){
-  const topics = getAllTopicsFlat();
-  const due = topics.filter(t=>t.status==='due');
-  const soon = topics.filter(t=>t.status==='soon');
-  const ok = topics.filter(t=>t.status==='ok');
-
-  const urgentEl = document.getElementById('urgentReviews');
-  const upcomingEl = document.getElementById('upcomingReviews');
-  const okEl = document.getElementById('okReviews');
-  urgentEl.innerHTML = ''; upcomingEl.innerHTML = ''; okEl.innerHTML = '';
-
-  if(due.length===0) urgentEl.innerHTML = '<div class="empty-state">چیزی برای مرور فوری نیست 🎉</div>';
-  else due.forEach(t => urgentEl.appendChild(renderReviewItem(t)));
-
-  if(soon.length===0) upcomingEl.innerHTML = '<div class="empty-state">مرور نزدیکی وجود ندارد</div>';
-  else soon.forEach(t => upcomingEl.appendChild(renderReviewItem(t)));
-
-  if(ok.length===0) okEl.innerHTML = '<div class="empty-state">هنوز موردی به‌روز نیست</div>';
-  else ok.forEach(t => okEl.appendChild(renderReviewItem(t)));
-}
-
-/* ================= RENDER: INSIGHTS TAB ================= */
-function renderInsightsTab(){
-  const el = document.getElementById('insightsList');
-  el.innerHTML = '';
-  const logs = getAllLogsFlat();
-  const insights = [];
-
-  const totalTests = logs.reduce((s,l)=>s+(l.tests||0),0);
-  const totalCorrect = logs.reduce((s,l)=>s+(l.correct||0),0);
-  const acc = totalTests>0 ? (totalCorrect/totalTests*100).toFixed(1) : null;
-  if(acc) insights.push(`📈 دقت کلی تست‌زنی شما: <b>${toFa(acc)}٪</b> از ${toFa(totalTests)} تست`);
-
-  insights.push(`⏱️ مجموع ساعت مطالعه: <b>${toFa(Math.round(getTotalHours()))}</b> ساعت`);
-
-  const bySubject = {};
-  data.subjects.forEach(s => {
-    const h = (s.logs||[]).reduce((a,l)=>a+(l.hours||0),0);
-    bySubject[s.name] = h;
-  });
-  const sorted = Object.entries(bySubject).sort((a,b)=>b[1]-a[1]);
-  if(sorted.length) insights.push(`🥇 بیشترین وقت صرف‌شده روی: <b>${sorted[0][0]}</b> (${toFa(Math.round(sorted[0][1]))} ساعت)`);
-
-  const burnout = checkBurnout();
-  if(burnout) insights.push('😮‍💨 ' + burnout);
-
-  const topics = getAllTopicsFlat();
-  const dueCount = topics.filter(t=>t.status==='due').length;
-  if(dueCount>0) insights.push(`⏰ در حال حاضر <b>${toFa(dueCount)}</b> مبحث نیاز به مرور فوری دارد`);
-
-  if(insights.length===0){
-    el.innerHTML = '<div class="empty-state">هنوز داده کافی برای تحلیل نیست</div>';
-    return;
-  }
-  insights.forEach(txt => {
-    const div = document.createElement('div');
-    div.className = 'glass insight-card';
-    div.innerHTML = txt;
-    el.appendChild(div);
-  });
-}
-
-/* ================= TABS ================= */
-function switchTabProgrammatic(name){
-  document.querySelectorAll('.tab-btn').forEach((b,i)=>{
-    b.classList.remove('active');
-    if((name==='home'&&i===0)||(name==='review'&&i===1)||(name==='insights'&&i===2)) b.classList.add('active');
-  });
-  document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
-  document.getElementById('tab-'+name).classList.add('active');
-  if(name === 'home') renderHome();
-  if(name === 'review') renderReviewTab();
-  if(name === 'insights') renderInsightsTab();
-}
-
-/* ================= MODALS ================= */
-function openModal(id){
-  if(id === 'logModal'){
-    const sel = document.getElementById('logSubjectSelect');
-    sel.innerHTML = data.subjects.map(s=>`<option value="${s.id}">${s.name}</option>`).join('');
-  }
-  if(id === 'subjectModal'){
-    const cp = document.getElementById('colorPicker');
-    cp.innerHTML = COLORS.map(c=>`<div class="color-dot ${c===selectedColor?'selected':''}" style="background:${c}" onclick="selectColor('${c}')"></div>`).join('');
-  }
-  document.getElementById(id).classList.add('open');
-}
-function closeModal(id){ document.getElementById(id).classList.remove('open'); }
-function selectColor(c){ selectedColor = c; openModal('subjectModal'); }
-
-function saveLog(){
-  const subjectId = document.getElementById('logSubjectSelect').value;
-  const topicName = document.getElementById('logTopicName').value.trim();
-  const type = document.getElementById('logActivityType').value;
-  const hours = parseFloat(document.getElementById('logHours').value) || 0;
-  const tests = parseInt(document.getElementById('logTests').value) || 0;
-  const correct = parseInt(document.getElementById('logCorrect').value) || 0;
-  const subject = data.subjects.find(s=>s.id===subjectId);
-  if(!subject) return;
-
-  subject.logs = subject.logs || [];
-  subject.logs.push({date: todayStr(), type, hours, tests, correct});
-
-  if(topicName){
-    subject.topics = subject.topics || {};
-    if(!subject.topics[topicName]){
-      subject.topics[topicName] = {firstDate: todayStr(), reviewsDone: [], lastActivity: todayStr()};
-    } else {
-      subject.topics[topicName].lastActivity = todayStr();
-      if(type === 'review') subject.topics[topicName].reviewsDone.push(todayStr());
-    }
-  }
-
-  const today = todayStr();
-  if(data.lastLogDate !== today){
-    const y = new Date(Date.now()-86400000).toISOString().slice(0,10);
-    data.streak = (data.lastLogDate === y) ? (data.streak||0)+1 : 1;
-    data.lastLogDate = today;
-  }
-  data.xp = (data.xp||0) + Math.round(hours*10) + tests;
-
-  saveData();
-  closeModal('logModal');
-  document.getElementById('logTopicName').value='';
-  document.getElementById('logHours').value='';
-  document.getElementById('logTests').value='';
-  document.getElementById('logCorrect').value='';
-  switchTabProgrammatic('home');
-}
-
-function saveSubject(){
-  const name = document.getElementById('subjectNameInput').value.trim();
-  if(!name) return;
-  data.subjects.push({id: 's_'+Date.now(), name, color: selectedColor, logs: [], topics: {}});
-  saveData();
-  closeModal('subjectModal');
-  document.getElementById('subjectNameInput').value='';
-  renderHome();
-}
-
-function openDetail(id){
-  activeSubjectId = id;
-  const s = data.subjects.find(x=>x.id===id);
-  if(!s) return;
-  document.getElementById('detailTitle').textContent = s.name;
-  const hours = (s.logs||[]).reduce((a,l)=>a+(l.hours||0),0);
-  const tests = (s.logs||[]).reduce((a,l)=>a+(l.tests||0),0);
-  document.getElementById('detailStats').innerHTML = `
-    <div class="glass stat-card"><div class="num">${toFa(Math.round(hours))}</div><div class="lbl">ساعت</div></div>
-    <div class="glass stat-card"><div class="num">${toFa(tests)}</div><div class="lbl">تست</div></div>
-    <div class="glass stat-card"><div class="num">${toFa(Object.keys(s.topics||{}).length)}</div><div class="lbl">مبحث</div></div>
-  `;
-  const topicsEl = document.getElementById('detailTopics');
-  topicsEl.innerHTML = '';
-  Object.entries(s.topics||{}).forEach(([name, t])=>{
-    const status = getTopicReviewStatus(t);
-    const div = document.createElement('div');
-    div.className = `glass review-item ${status.status}`;
-    div.innerHTML = `<div class="review-dot ${status.status}"></div><div><div class="review-title">${name}</div><div class="review-sub">${toFa(status.daysSinceLast)} روز از آخرین فعالیت</div></div>`;
-    topicsEl.appendChild(div);
-  });
-  const histEl = document.getElementById('detailHistory');
-  histEl.innerHTML = (s.logs||[]).slice(-5).reverse().map(l=>
-    `<div class="glass insight-card">${l.date} • ${l.hours} ساعت • ${l.tests||0} تست</div>`
-  ).join('') || '<div class="empty-state">تاریخچه‌ای ثبت نشده</div>';
-
-  openModal('detailModal');
-}
-function deleteSubject(){
-  data.subjects = data.subjects.filter(s=>s.id!==activeSubjectId);
-  saveData();
-  closeModal('detailModal');
-  renderHome();
-}
-
-/* ================= INIT ================= */
-renderHome();
-  function generateId() {
-  return Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
-}
-
-function openSubjectModal() {
-  document.getElementById('subjectModal').style.display = 'flex';
-}
-
-function closeModal(id) {
-  document.getElementById(id).style.display = 'none';
-}
-
-function saveSubject() {
-  const nameInput = document.getElementById('subjectNameInput');
-  const name = nameInput.value.trim();
-  if (!name) { alert('لطفاً نام درس را وارد کنید'); return; }
-
-  const selectedColorEl = document.querySelector('#colorPicker .color-option.selected');
-  const color = selectedColorEl ? selectedColorEl.dataset.color : COLORS[0];
-
-  if (!data.subjects) data.subjects = [];
-  data.subjects.push({ id: generateId(), name: name, color: color, topics: [] });
-
-  saveData();
-  nameInput.value = '';
-  closeModal('subjectModal');
-  renderSubjectsList();
-  populateSubjectDropdown();
-}
-
-function renderSubjectsList() {
-  const container = document.getElementById('subjectsList');
-  if (!container) return;
-  if (!data.subjects || data.subjects.length === 0) {
-    container.innerHTML = '<p style="text-align:center;opacity:0.6;">هنوز درسی اضافه نشده</p>';
-    return;
-  }
-  container.innerHTML = data.subjects.map(s => `
-    <div class="subject-item" style="border-right:4px solid ${s.color};padding:10px;margin:6px 0;">
-      <span>${s.name}</span>
-    </div>
-  `).join('');
-}
-
-function populateSubjectDropdown() {
-  const select = document.getElementById('logSubjectSelect');
-  if (!select) return;
-  select.innerHTML = '<option value="">انتخاب درس</option>';
-  (data.subjects || []).forEach(s => {
-    const opt = document.createElement('option');
-    opt.value = s.id;
-    opt.textContent = s.name;
-    select.appendChild(opt);
-  });
-}
-
-function openLogModal() {
-  populateSubjectDropdown();
-  document.getElementById('logModal').style.display = 'flex';
-}
-
-function saveLog() {
-  const subjectId = document.getElementById('logSubjectSelect').value;
-  const topicName = document.getElementById('logTopicName').value.trim();
-  const activityType = document.getElementById('logActivityType').value;
-  const hours = parseFloat(document.getElementById('logHours').value) || 0;
-  const tests = parseInt(document.getElementById('logTests').value) || 0;
-  const correct = parseInt(document.getElementById('logCorrect').value) || 0;
-
-  if (!subjectId) { alert('لطفاً درس را انتخاب کنید'); return; }
-  if (!topicName) { alert('لطفاً نام مبحث را وارد کنید'); return; }
-
-  if (!data.logs) data.logs = [];
-  data.logs.push({
-    id: generateId(), subjectId, topicName, activityType,
-    hours, tests, correct, date: todayStr()
-  });
-
-  saveData();
-  document.getElementById('logTopicName').value = '';
-  document.getElementById('logHours').value = '';
-  document.getElementById('logTests').value = '';
-  document.getElementById('logCorrect').value = '';
-  closeModal('logModal');
-  renderStats();
-  renderTodayMessage();
-  renderHomeAlerts();
-}
-
-// این خط رو حتماً اضافه کن تا لیست درس‌ها موقع باز شدن صفحه نمایش داده بشه
-renderSubjectsList();
-
 </script>
-</body>
-</html>
+<script>
+/* ================== ROUTER ================== */
+let currentPage = "dashboard";
+
+function navigate(page){
+  currentPage = page;
+  document.querySelectorAll("[data-page]").forEach(el=>{
+    el.classList.toggle("active", el.dataset.page===page);
+  });
+  render();
+}
+
+function render(){
+  const map = {
+    dashboard: renderDashboard,
+    study: renderStudyLog,
+    test: renderTestLog,
+    planner: renderPlanner,
+    mistakes: renderMistakesBook,
+    reviews: renderReviewsPage,
+    achievements: renderAchievements,
+    settings: renderSettings
+  };
+  (map[currentPage] || renderDashboard)();
+}
+
+document.querySelectorAll("[data-page]").forEach(el=>{
+  el.addEventListener("click", ()=> navigate(el.dataset.page));
+});
+
+/* ================== BACKLOG ALGORITHM ================== */
+// محاسبه عقب‌ماندگی: مقایسه ساعات هدف روزانه با ساعات واقعی مطالعه‌شده در ۷ روز گذشته
+function computeBacklog(){
+  const target = DB.user.targetDailyHours;
+  let deficit = 0;
+  for(let i=1;i<=7;i++){
+    const d = addDays(todayStr(), -i);
+    const done = getSessionsForDate(d).reduce((s,x)=>s+x.durationMinutes/60,0);
+    if(done < target) deficit += (target - done);
+  }
+  return Math.round(deficit*10)/10;
+}
+
+// توزیع ساعات عقب‌افتاده در ۵ روز آینده
+function distributeBacklog(){
+  const backlog = computeBacklog();
+  if(backlog <= 0) return null;
+  const perDay = Math.round((backlog/5)*10)/10;
+  const days = [];
+  for(let i=0;i<5;i++){
+    days.push({date: addDays(todayStr(), i), extraHours: perDay});
+  }
+  return {totalBacklog: backlog, perDayExtra: perDay, days};
+}
+
+function markComeback(){
+  DB.meta.comebackCount++;
+  saveDB();
+  checkBadges();
+}
+
+/* ================== DASHBOARD ================== */
+function renderDashboard(){
+  const el = document.getElementById("pageContent");
+  const cmp = compareWithYesterday();
+  const streak = computeStreak();
+  const level = getLevel();
+  const phase = getCurrentPhase();
+  const dueReviews = getDueReviewsToday();
+  const fatigueWarn = checkFatigueWarning();
+  const backlog = computeBacklog();
+  const dte = daysToExam();
+
+  // motivational message selection
+  let msgPool = MOTIV_MESSAGES.general;
+  if(cmp.diff > 0) msgPool = MOTIV_MESSAGES.ahead;
+  else if(cmp.diff < 0) msgPool = MOTIV_MESSAGES.behind;
+  if(streak >= 5) msgPool = MOTIV_MESSAGES.streak;
+  if(dte <= 30) msgPool = MOTIV_MESSAGES.examClose;
+  const motivMsg = msgPool[Math.floor(Math.random()*msgPool.length)];
+
+  const xpToNext = level.next ? level.next.min - level.xp : 0;
+  const xpProgress = level.next ? Math.min(100, Math.round(((level.xp - level.current.min)/(level.next.min - level.current.min))*100)) : 100;
+
+  el.innerHTML = `
+    <div class="dash-grid">
+
+      <div class="card hero-card">
+        <div class="hero-top">
+          <div>
+            <h2>سلام، ${DB.user.name} 👋</h2>
+            <p class="muted">${motivMsg}</p>
+          </div>
+          <div class="exam-countdown">
+            <span class="big-num">${dte >= 0 ? dte : 0}</span>
+            <span class="small-label">روز تا آزمون</span>
+          </div>
+        </div>
+        <div class="phase-tag">${phase.name}</div>
+      </div>
+
+      <div class="card score-card">
+        <h3>امتیاز امروز</h3>
+        <div class="score-value">${cmp.today.score}</div>
+        <div class="score-compare ${cmp.diff>=0?'pos':'neg'}">
+          ${cmp.diff>=0 ? '▲' : '▼'} ${Math.abs(cmp.diff)} نسبت به دیروز (${cmp.yesterday.score})
+        </div>
+        <div class="mini-stats">
+          <span>⏱ ${cmp.today.effectiveHours} ساعت مؤثر</span>
+          <span>📝 ${cmp.today.testCount} تست</span>
+          <span>🔄 ${cmp.today.reviewCount} مرور</span>
+        </div>
+      </div>
+
+      <div class="card level-card">
+        <h3>${level.current.name}</h3>
+        <div class="xp-bar"><div class="xp-fill" style="width:${xpProgress}%"></div></div>
+        <p class="muted">${level.next ? `${Math.round(xpToNext)} XP تا سطح ${level.next.name}` : "بالاترین سطح 🎉"}</p>
+      </div>
+
+      <div class="card streak-card">
+        <h3>🔥 استریک</h3>
+        <div class="score-value">${streak}</div>
+        <p class="muted">روز پشت‌سرهم | رکورد: ${computeMaxStreak()}</p>
+      </div>
+
+      ${dueReviews.length ? `
+      <div class="card review-alert">
+        <h3>🔄 مرورهای امروز (${dueReviews.length})</h3>
+        <ul class="review-list">
+          ${dueReviews.slice(0,5).map(r=>`
+            <li>
+              <span>${r.topicName} <small class="muted">(${subjectName(r.subjectId)} — ${r.reviewType})</small></span>
+              <button class="btn-sm" onclick="completeReview('${r.id}');render()">انجام شد</button>
+            </li>`).join("")}
+        </ul>
+        ${dueReviews.length>5 ? `<p class="muted">و ${dueReviews.length-5} مورد دیگر...</p>`:""}
+      </div>` : `<div class="card review-alert ok"><h3>✅ مرور عقب‌افتاده‌ای نداری</h3></div>`}
+
+      ${backlog > 0 ? `
+      <div class="card backlog-alert">
+        <h3>⚠️ عقب‌ماندگی: ${backlog} ساعت</h3>
+        <p class="muted">پیشنهاد: ${Math.round((backlog/5)*10)/10} ساعت اضافه در هر یک از ۵ روز آینده</p>
+        <button class="btn-sm" onclick="markComeback();toast('امروز رو به‌عنوان روز جبران ثبت کردی 💪')">امروز جبران می‌کنم</button>
+      </div>` : ""}
+
+      ${fatigueWarn ? `
+      <div class="card fatigue-alert">
+        <h3>😴 هشدار فرسودگی</h3>
+        <p>${fatigueWarn}</p>
+      </div>` : ""}
+
+      <div class="card chart-card full-width">
+        <h3>روند ۱۴ روز گذشته</h3>
+        <canvas id="trendChart" height="90"></canvas>
+      </div>
+
+      <div class="card wellness-card">
+        <h3>ثبت وضعیت امروز</h3>
+        <label>ساعت خواب دیشب</label>
+        <input type="number" id="wSleep" min="0" max="14" step="0.5" placeholder="مثلاً 6.5">
+        <label>سطح استرس (۱-۱۰)</label>
+        <input type="range" id="wStress" min="1" max="10" value="5">
+        <label>حال کلی امروز</label>
+        <select id="wMood">
+          <option value="عالی">عالی</option>
+          <option value="خوب">خوب</option>
+          <option value="متوسط">متوسط</option>
+          <option value="خسته">خسته</option>
+          <option value="فرسوده">فرسوده</option>
+        </select>
+        <button class="btn-primary" onclick="submitWellness()">ثبت</button>
+      </div>
+
+    </div>
+  `;
+
+  drawTrendChart();
+}
+
+function submitWellness(){
+  const sleepHours = Number(document.getElementById("wSleep").value)||0;
+  const stress = Number(document.getElementById("wStress").value);
+  const mood = document.getElementById("wMood").value;
+  upsertDailyLog({sleepHours, stress, mood});
+  toast("وضعیت امروز ثبت شد");
+  render();
+}
+
+function drawTrendChart(){
+  const ctx = document.getElementById("trendChart");
+  if(!ctx) return;
+  const labels = [], scores = [];
+  for(let i=13;i>=0;i--){
+    const d = addDays(todayStr(), -i);
+    labels.push(d.slice(5));
+    scores.push(computeDailyScore(d).score);
+  }
+  if(window._trendChartInst) window._trendChartInst.destroy();
+  window._trendChartInst = new Chart(ctx, {
+    type:"line",
+    data:{ labels, datasets:[{
+      label:"امتیاز روزانه", data: scores,
+      borderColor:"#0e8a6d", backgroundColor:"rgba(14,138,109,0.1)",
+      fill:true, tension:0.3, pointRadius:3
+    }]},
+    options:{
+      plugins:{legend:{display:false}},
+      scales:{ y:{ beginAtZero:true } }
+    }
+  });
+}
+
+/* ================== STUDY LOG PAGE ================== */
+function renderStudyLog(){
+  const el = document.getElementById("pageContent");
+  const todaySessions = getSessionsForDate(todayStr());
+  const totalToday = todaySessions.reduce((s,x)=>s+x.durationMinutes,0);
+
+  el.innerHTML = `
+    <div class="page-header">
+      <h2>ثبت مطالعه</h2>
+      <p class="muted">مجموع امروز: ${Math.round(totalToday/60*10)/10} ساعت</p>
+    </div>
+
+    <div class="form-grid card">
+      <div class="form-row">
+        <label>درس</label>
+        <select id="sSubject">
+          ${DB.subjects.map(s=>`<option value="${s.id}">${s.name}</option>`).join("")}
+        </select>
+      </div>
+      <div class="form-row">
+        <label>موضوع / تاپیک</label>
+        <input type="text" id="sTopic" placeholder="مثلاً نارسایی قلبی">
+      </div>
+      <div class="form-row">
+        <label>نوع فعالیت</label>
+        <select id="sActivity">
+          ${ACTIVITY_TYPES.map(a=>`<option value="${a}">${a}</option>`).join("")}
+        </select>
+      </div>
+      <div class="form-row">
+        <label>مدت (دقیقه)</label>
+        <input type="number" id="sDuration" min="5" step="5" value="60">
+      </div>
+      <div class="form-row">
+        <label>کیفیت تمرکز (۰.۵ تا ۲)</label>
+        <input type="range" id="sFocus" min="0.5" max="2" step="0.1" value="1.2">
+        <span id="sFocusVal" class="muted">1.2</span>
+      </div>
+      <div class="form-row">
+        <label>سطح انرژی (۱-۱۰)</label>
+        <input type="range" id="sEnergy" min="1" max="10" value="6">
+      </div>
+      <div class="form-row">
+        <label>تعداد تست حل‌شده (اختیاری)</label>
+        <input type="number" id="sTests" min="0" value="0">
+      </div>
+      <div class="form-row full">
+        <label>یادداشت</label>
+        <textarea id="sNotes" rows="2" placeholder="نکات مهم این جلسه..."></textarea>
+      </div>
+      <button class="btn-primary full" onclick="submitStudySession()">ثبت جلسه مطالعه</button>
+    </div>
+
+    <div class="card">
+      <h3>جلسات امروز</h3>
+      <table class="data-table">
+        <thead><tr><th>درس</th><th>موضوع</th><th>نوع</th><th>مدت</th><th>ارزش</th></tr></thead>
+        <tbody>
+          ${todaySessions.map(s=>`
+            <tr>
+              <td><span class="dot" style="background:${subjectColor(s.subjectId)}"></span>${subjectName(s.subjectId)}</td>
+              <td>${s.topicName||"-"}</td>
+              <td>${s.activityType}</td>
+              <td>${s.durationMinutes} دقیقه</td>
+              <td>${Math.round(s.value*10)/10}</td>
+            </tr>`).join("") || `<tr><td colspan="5" class="muted">هنوز جلسه‌ای ثبت نشده</td></tr>`}
+        </tbody>
+      </table>
+    </div>
+  `;
+
+  document.getElementById("sFocus").addEventListener("input", e=>{
+    document.getElementById("sFocusVal").textContent = e.target.value;
+  });
+}
+
+function submitStudySession(){
+  const subjectId = document.getElementById("sSubject").value;
+  const topicName = document.getElementById("sTopic").value.trim();
+  const activityType = document.getElementById("sActivity").value;
+  const durationMinutes = document.getElementById("sDuration").value;
+  const focusScore = document.getElementById("sFocus").value;
+  const energyScore = document.getElementById("sEnergy").value;
+  const testsCount = document.getElementById("sTests").value;
+  const notes = document.getElementById("sNotes").value.trim();
+
+  if(!durationMinutes || durationMinutes < 5){
+    toast("مدت زمان معتبر وارد کن");
+    return;
+  }
+
+  addStudySession({subjectId, topicName, activityType, durationMinutes, focusScore, energyScore, testsCount, notes});
+  toast("جلسه مطالعه ثبت شد ✅");
+  checkBadges();
+  renderStudyLog();
+}
+
+/* ================== TEST LOG PAGE ================== */
+function renderTestLog(){
+  const el = document.getElementById("pageContent");
+  const todayTests = getTestsForDate(todayStr());
+
+  el.innerHTML = `
+    <div class="page-header"><h2>ثبت تست</h2></div>
+
+    <div class="form-grid card">
+      <div class="form-row">
+        <label>درس</label>
+        <select id="tSubject">
+          ${DB.subjects.map(s=>`<option value="${s.id}">${s.name}</option>`).join("")}
+        </select>
+      </div>
+      <div class="form-row">
+        <label>موضوع</label>
+        <input type="text" id="tTopic" placeholder="مثلاً آریتمی">
+      </div>
+      <div class="form-row">
+        <label>نوع آزمون</label>
+        <select id="tType">
+          ${TEST_TYPES.map(t=>`<option value="${t}">${t}</option>`).join("")}
+        </select>
+      </div>
+      <div class="form-row">
+        <label>تعداد کل سؤال</label>
+        <input type="number" id="tTotal" min="1" value="10">
+      </div>
+      <div class="form-row">
+        <label>تعداد صحیح</label>
+        <input type="number" id="tCorrect" min="0" value="7">
+      </div>
+      <div class="form-row">
+        <label>تعداد غلط</label>
+        <input type="number" id="tWrong" min="0" value="2">
+      </div>
+      <div class="form-row">
+        <label>مدت زمان (دقیقه)</label>
+        <input type="number" id="tDuration" min="0" value="15">
+      </div>
+      <button class="btn-primary full" onclick="submitTestSession()">ثبت تست</button>
+    </div>
+
+    <div class="card">
+      <h3>تست‌های امروز</h3>
+      <table class="data-table">
+        <thead><tr><th>درس</th><th>موضوع</th><th>نوع</th><th>درصد</th><th>صحیح/غلط/بی‌پاسخ</th></tr></thead>
+        <tbody>
+          ${todayTests.map(t=>`
+            <tr>
+              <td>${subjectName(t.subjectId)}</td>
+              <td>${t.topicName||"-"}</td>
+              <td>${t.testType}</td>
+              <td>${t.percent}%</td>
+              <td>${t.correct} / ${t.wrong} / ${t.empty}</td>
+            </tr>`).join("") || `<tr><td colspan="5" class="muted">هنوز تستی ثبت نشده</td></tr>`}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+function submitTestSession(){
+  const subjectId = document.getElementById("tSubject").value;
+  const topicName = document.getElementById("tTopic").value.trim();
+  const testType = document.getElementById("tType").value;
+  const totalQuestions = Number(document.getElementById("tTotal").value);
+  const correct = Number(document.getElementById("tCorrect").value);
+  const wrong = Number(document.getElementById("tWrong").value);
+  const durationMinutes = document.getElementById("tDuration").value;
+
+  if(correct + wrong > totalQuestions){
+    toast("جمع صحیح و غلط از کل سؤالات بیشتره!");
+    return;
+  }
+
+  const session = addTestSession({subjectId, topicName, testType, totalQuestions, correct, wrong, durationMinutes});
+
+  // اگر غلط داشت، مستقیم فرم ثبت غلط باز شود (تحلیل علت مهم‌تر از تعداده)
+  if(wrong > 0){
+    openMistakeForm(session);
+  } else {
+    toast("تست ثبت شد ✅");
+    checkBadges();
+    renderTestLog();
+  }
+}
+
+function openMistakeForm(session){
+  openModal(`
+    <h3>ثبت علت غلط‌ها (${session.wrong} مورد)</h3>
+    <p class="muted">تحلیل تست از تعداد تست مهم‌تره. لطفاً علت اصلی رو مشخص کن.</p>
+    <div class="form-row">
+      <label>علت اصلی</label>
+      <select id="mReason">
+        ${MISTAKE_REASONS.map(r=>`<option value="${r}">${r}</option>`).join("")}
+      </select>
+    </div>
+    <div class="form-row">
+      <label>اهمیت</label>
+      <select id="mImportance">
+        <option value="بالا">بالا</option>
+        <option value="متوسط" selected>متوسط</option>
+        <option value="پایین">پایین</option>
+      </select>
+    </div>
+    <div class="form-row">
+      <label>یادداشت</label>
+      <textarea id="mNote" rows="2" placeholder="نکته‌ای که باید یادت بمونه..."></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-primary" onclick="saveMistakeFromModal('${session.id}','${session.subjectId}','${session.topicName}')">ثبت و بستن</button>
+      <button class="btn-ghost" onclick="closeModal();renderTestLog()">فعلاً رد کن</button>
+    </div>
+  `);
+}
+
+function saveMistakeFromModal(testSessionId, subjectId, topicName){
+  const reason = document.getElementById("mReason").value;
+  const importance = document.getElementById("mImportance").value;
+  const note = document.getElementById("mNote").value.trim();
+  addMistake({testSessionId, subjectId, topicName, reason, note, importance});
+  closeModal();
+  toast("در دفترچه غلط‌ها ثبت شد 📓");
+  checkBadges();
+  renderTestLog();
+}
+
+/* ================== PLANNER PAGE ================== */
+function renderPlanner(){
+  const el = document.getElementById("pageContent");
+  const phase = getCurrentPhase();
+  const dte = daysToExam();
+  const backlogInfo = distributeBacklog();
+  const target = DB.user.targetDailyHours;
+  const studyHrs = Math.round(target*phase.ratio.study*10)/10;
+  const testHrs = Math.round(target*phase.ratio.test*10)/10;
+  const reviewHrs = Math.round(target*phase.ratio.review*10)/10;
+  const dueReviews = getDueReviewsToday();
+
+  el.innerHTML = `
+    <div class="page-header">
+      <h2>برنامه‌ریز هوشمند</h2>
+      <p class="muted">${phase.name} — ${dte >= 0 ? dte : 0} روز تا آزمون</p>
+    </div>
+
+    <div class="card">
+      <h3>توزیع پیشنهادی ساعات امروز (کل: ${target} ساعت)</h3>
+      <div class="ratio-bar">
+        <div class="ratio-seg study" style="width:${phase.ratio.study*100}%">مطالعه ${studyHrs}h</div>
+        <div class="ratio-seg test" style="width:${phase.ratio.test*100}%">تست ${testHrs}h</div>
+        <div class="ratio-seg review" style="width:${phase.ratio.review*100}%">مرور ${reviewHrs}h</div>
+      </div>
+      <p class="muted small">قانون: مرور بر مطالعه جدید اولویت دارد. ابتدا مرورهای عقب‌افتاده رو انجام بده.</p>
+    </div>
+
+    ${backlogInfo ? `
+    <div class="card backlog-plan">
+      <h3>⚠️ برنامه جبران عقب‌ماندگی</h3>
+      <p>مجموع عقب‌ماندگی: <b>${backlogInfo.totalBacklog} ساعت</b></p>
+      <table class="data-table">
+        <thead><tr><th>روز</th><th>ساعت اضافه پیشنهادی</th></tr></thead>
+        <tbody>
+          ${backlogInfo.days.map(d=>`<tr><td>${d.date}</td><td>+${d.perDayExtra||d.extraHours} ساعت</td></tr>`).join("")}
+        </tbody>
+      </table>
+    </div>` : `<div class="card ok"><h3>✅ عقب‌ماندگی نداری، برنامه‌ات رو به‌موقع پیش می‌بری</h3></div>`}
+
+    <div class="card">
+      <h3>اولویت امروز — مرورهای سررسید (${dueReviews.length})</h3>
+      <ul class="review-list">
+        ${dueReviews.map(r=>`
+          <li>
+            <span>${r.topicName} <small class="muted">(${subjectName(r.subjectId)} — ${r.reviewType})</small></span>
+            <button class="btn-sm" onclick="completeReview('${r.id}');renderPlanner()">انجام شد</button>
+          </li>`).join("") || `<li class="muted">موردی نیست</li>`}
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>تنظیم هدف ساعت روزانه</h3>
+      <div class="form-row inline">
+        <input type="number" id="plTarget" min="1" max="16" step="0.5" value="${target}">
+        <button class="btn-primary" onclick="updateTargetHours()">به‌روزرسانی</button>
+      </div>
+    </div>
+  `;
+}
+
+function updateTargetHours(){
+  const v = Number(document.getElementById("plTarget").value);
+  if(v > 0){
+    DB.user.targetDailyHours = v;
+    saveDB();
+    toast("هدف روزانه به‌روز شد");
+    renderPlanner();
+  }
+}
+</script>
+<script>
+/* ================== UTILS (در صورت نبودن در بخش‌های قبل) ================== */
+if(typeof toast !== "function"){
+  window.toast = function(msg, duration=2500){
+    let box = document.getElementById("toastBox");
+    if(!box){
+      box = document.createElement("div");
+      box.id = "toastBox";
+      box.className = "toast-box";
+      document.body.appendChild(box);
+    }
+    const t = document.createElement("div");
+    t.className = "toast-item";
+    t.textContent = msg;
+    box.appendChild(t);
+    setTimeout(()=> t.classList.add("show"), 10);
+    setTimeout(()=>{ t.classList.remove("show"); setTimeout(()=>t.remove(),300); }, duration);
+  };
+}
+
+if(typeof openModal !== "function"){
+  window.openModal = function(html){
+    let overlay = document.getElementById("modalOverlay");
+    if(!overlay){
+      overlay = document.createElement("div");
+      overlay.id = "modalOverlay";
+      overlay.className = "modal-overlay";
+      overlay.innerHTML = `<div class="modal-box" id="modalBox"></div>`;
+      document.body.appendChild(overlay);
+      overlay.addEventListener("click", e=>{ if(e.target===overlay) closeModal(); });
+    }
+    document.getElementById("modalBox").innerHTML = html;
+    overlay.classList.add("open");
+  };
+  window.closeModal = function(){
+    const overlay = document.getElementById("modalOverlay");
+    if(overlay) overlay.classList.remove("open");
+  };
+}
+
+/* ================== MISTAKES BOOK PAGE ================== */
+let mistakeFilter = {subjectId:"all", reason:"all", status:"all"};
+
+function renderMistakesBook(){
+  const el = document.getElementById("pageContent");
+  let list = [...DB.mistakes].sort((a,b)=> new Date(b.createdAt) - new Date(a.createdAt));
+
+  if(mistakeFilter.subjectId !== "all") list = list.filter(m=>m.subjectId===mistakeFilter.subjectId);
+  if(mistakeFilter.reason !== "all") list = list.filter(m=>m.reason===mistakeFilter.reason);
+  if(mistakeFilter.status !== "all") list = list.filter(m=> mistakeFilter.status==="resolved" ? m.resolved : !m.resolved);
+
+  // آمار علت‌ها برای تحلیل
+  const reasonStats = {};
+  DB.mistakes.forEach(m=>{ reasonStats[m.reason] = (reasonStats[m.reason]||0)+1; });
+  const topReason = Object.entries(reasonStats).sort((a,b)=>b[1]-a[1])[0];
+
+  el.innerHTML = `
+    <div class="page-header">
+      <h2>دفترچه غلط‌ها</h2>
+      <p class="muted">${DB.mistakes.length} مورد ثبت‌شده${topReason ? ` — بیشترین علت: ${topReason[0]} (${topReason[1]} مورد)`:""}</p>
+    </div>
+
+    <div class="card filter-bar">
+      <select id="mfSubject">
+        <option value="all">همه دروس</option>
+        ${DB.subjects.map(s=>`<option value="${s.id}" ${mistakeFilter.subjectId===s.id?"selected":""}>${s.name}</option>`).join("")}
+      </select>
+      <select id="mfReason">
+        <option value="all">همه علت‌ها</option>
+        ${MISTAKE_REASONS.map(r=>`<option value="${r}" ${mistakeFilter.reason===r?"selected":""}>${r}</option>`).join("")}
+      </select>
+      <select id="mfStatus">
+        <option value="all" ${mistakeFilter.status==="all"?"selected":""}>همه وضعیت‌ها</option>
+        <option value="open" ${mistakeFilter.status==="open"?"selected":""}>باز</option>
+        <option value="resolved" ${mistakeFilter.status==="resolved"?"selected":""}>حل‌شده</option>
+      </select>
+      <button class="btn-sm" onclick="applyMistakeFilter()">اعمال فیلتر</button>
+    </div>
+
+    <div class="card chart-card">
+      <h3>توزیع علت غلط‌ها</h3>
+      <canvas id="reasonChart" height="80"></canvas>
+    </div>
+
+    <div class="mistake-list">
+      ${list.map(m=>`
+        <div class="card mistake-item ${m.resolved?'resolved':''}">
+          <div class="mistake-top">
+            <span class="dot" style="background:${subjectColor(m.subjectId)}"></span>
+            <b>${subjectName(m.subjectId)}</b>
+            <span class="muted">— ${m.topicName||"بدون عنوان"}</span>
+            <span class="badge-tag ${m.importance==='بالا'?'high':m.importance==='متوسط'?'mid':'low'}">${m.importance}</span>
+          </div>
+          <p class="mistake-reason">علت: <b>${m.reason}</b></p>
+          ${m.note ? `<p class="muted">${m.note}</p>` : ""}
+          <div class="mistake-actions">
+            <span class="muted small">${new Date(m.createdAt).toLocaleDateString("fa-IR")}</span>
+            ${m.resolved
+              ? `<span class="resolved-tag">✅ حل‌شده</span>`
+              : `<button class="btn-sm" onclick="resolveMistake('${m.id}')">علامت به‌عنوان حل‌شده</button>`}
+            <button class="btn-sm danger" onclick="deleteMistake('${m.id}')">حذف</button>
+          </div>
+        </div>
+      `).join("") || `<div class="card muted">موردی با این فیلتر یافت نشد</div>`}
+    </div>
+  `;
+
+  drawReasonChart(reasonStats);
+}
+
+function applyMistakeFilter(){
+  mistakeFilter.subjectId = document.getElementById("mfSubject").value;
+  mistakeFilter.reason = document.getElementById("mfReason").value;
+  mistakeFilter.status = document.getElementById("mfStatus").value;
+  renderMistakesBook();
+}
+
+function resolveMistake(id){
+  const m = DB.mistakes.find(x=>x.id===id);
+  if(m){ m.resolved = true; m.resolvedAt = new Date().toISOString(); saveDB(); checkBadges(); }
+  renderMistakesBook();
+}
+
+function deleteMistake(id){
+  DB.mistakes = DB.mistakes.filter(x=>x.id!==id);
+  saveDB();
+  renderMistakesBook();
+}
+
+function drawReasonChart(stats){
+  const ctx = document.getElementById("reasonChart");
+  if(!ctx) return;
+  const labels = Object.keys(stats);
+  const data = Object.values(stats);
+  if(window._reasonChartInst) window._reasonChartInst.destroy();
+  if(!labels.length) return;
+  window._reasonChartInst = new Chart(ctx, {
+    type: "bar",
+    data: { labels, datasets:[{ data, backgroundColor:"#0e8a6d" }] },
+    options: { plugins:{legend:{display:false}}, scales:{ y:{ beginAtZero:true, ticks:{stepSize:1} } } }
+  });
+}
+
+/* ================== REVIEWS PAGE ================== */
+function renderReviewsPage(){
+  const el = document.getElementById("pageContent");
+  const today = todayStr();
+  const dueToday = getDueReviewsToday();
+  const overdue = DB.reviews.filter(r=> !r.completed && r.dueDate < today);
+  const upcoming = DB.reviews.filter(r=> !r.completed && r.dueDate > today)
+                    .sort((a,b)=> new Date(a.dueDate)-new Date(b.dueDate))
+                    .slice(0,20);
+  const completedCount = DB.reviews.filter(r=>r.completed).length;
+
+  el.innerHTML = `
+    <div class="page-header">
+      <h2>مرورهای فاصله‌دار</h2>
+      <p class="muted">مراحل مرور: ۱، ۳، ۷، ۱۴، ۳۰ و ۶۰ روز پس از مطالعه اولیه</p>
+    </div>
+
+    <div class="stat-row">
+      <div class="card mini-stat"><b>${dueToday.length}</b><span>امروز</span></div>
+      <div class="card mini-stat danger"><b>${overdue.length}</b><span>عقب‌افتاده</span></div>
+      <div class="card mini-stat"><b>${upcoming.length}</b><span>آینده</span></div>
+      <div class="card mini-stat ok"><b>${completedCount}</b><span>انجام‌شده</span></div>
+    </div>
+
+    ${overdue.length ? `
+    <div class="card review-alert">
+      <h3>🔴 مرورهای عقب‌افتاده</h3>
+      <ul class="review-list">
+        ${overdue.map(r=>`
+          <li>
+            <span>${r.topicName} <small class="muted">(${subjectName(r.subjectId)} — ${r.reviewType} — سررسید ${r.dueDate})</small></span>
+            <button class="btn-sm" onclick="completeReview('${r.id}');renderReviewsPage()">انجام شد</button>
+          </li>`).join("")}
+      </ul>
+    </div>` : ""}
+
+    <div class="card">
+      <h3>🔵 امروز</h3>
+      <ul class="review-list">
+        ${dueToday.map(r=>`
+          <li>
+            <span>${r.topicName} <small class="muted">(${subjectName(r.subjectId)} — ${r.reviewType})</small></span>
+            <button class="btn-sm" onclick="completeReview('${r.id}');renderReviewsPage()">انجام شد</button>
+          </li>`).join("") || `<li class="muted">موردی نیست</li>`}
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>🟢 آینده</h3>
+      <table class="data-table">
+        <thead><tr><th>تاریخ</th><th>درس</th><th>موضوع</th><th>مرحله</th></tr></thead>
+        <tbody>
+          ${upcoming.map(r=>`
+            <tr>
+              <td>${r.dueDate}</td>
+              <td>${subjectName(r.subjectId)}</td>
+              <td>${r.topicName}</td>
+              <td>${r.reviewType}</td>
+            </tr>`).join("") || `<tr><td colspan="4" class="muted">موردی نیست</td></tr>`}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+/* ================== ACHIEVEMENTS PAGE ================== */
+function renderAchievements(){
+  const el = document.getElementById("pageContent");
+  const level = getLevel();
+  const earned = DB.achievements.filter(a=>a.earned);
+  const locked = BADGES.filter(b=> !earned.some(e=>e.id===b.id));
+
+  el.innerHTML = `
+    <div class="page-header">
+      <h2>سطح و نشان‌ها</h2>
+      <p class="muted">${earned.length} از ${BADGES.length} نشان کسب شده</p>
+    </div>
+
+    <div class="card level-card center">
+      <h3>${level.current.name}</h3>
+      <div class="xp-bar big"><div class="xp-fill" style="width:${level.next ? Math.round(((level.xp-level.current.min)/(level.next.min-level.current.min))*100) : 100}%"></div></div>
+      <p class="muted">${level.xp} XP ${level.next ? `— ${level.next.name} در ${level.next.min - level.xp} XP دیگر` : "(بالاترین سطح)"}</p>
+      <div class="level-ladder">
+        ${LEVELS.map(l=>`<span class="ladder-item ${l.min<=level.xp?'done':''} ${l.name===level.current.name?'current':''}">${l.name}</span>`).join("")}
+      </div>
+    </div>
+
+    <h3 class="section-title">نشان‌های کسب‌شده</h3>
+    <div class="badge-grid">
+      ${earned.length ? earned.map(e=>{
+        const b = BADGES.find(x=>x.id===e.id);
+        return `<div class="badge-item earned">
+          <div class="badge-icon">${b?.icon||"🏅"}</div>
+          <div class="badge-name">${b?.name||e.id}</div>
+          <div class="badge-desc muted">${b?.desc||""}</div>
+        </div>`;
+      }).join("") : `<p class="muted">هنوز نشانی کسب نکردی</p>`}
+    </div>
+
+    <h3 class="section-title">نشان‌های قفل‌شده</h3>
+    <div class="badge-grid">
+      ${locked.map(b=>`
+        <div class="badge-item locked">
+          <div class="badge-icon">🔒</div>
+          <div class="badge-name">${b.name}</div>
+          <div class="badge-desc muted">${b.desc}</div>
+        </div>`).join("")}
+    </div>
+  `;
+}
+
+/* ================== SETTINGS PAGE ================== */
+function renderSettings(){
+  const el = document.getElementById("pageContent");
+
+  el.innerHTML = `
+    <div class="page-header"><h2>تنظیمات</h2></div>
+
+    <div class="card">
+      <h3>پروفایل</h3>
+      <div class="form-row">
+        <label>نام</label>
+        <input type="text" id="setName" value="${DB.user.name}">
+      </div>
+      <div class="form-row">
+        <label>تاریخ آزمون (میلادی، YYYY-MM-DD)</label>
+        <input type="date" id="setExamDate" value="${DB.user.examDate}">
+      </div>
+      <div class="form-row">
+        <label>هدف ساعت مطالعه روزانه</label>
+        <input type="number" id="setTarget" min="1" max="16" step="0.5" value="${DB.user.targetDailyHours}">
+      </div>
+      <button class="btn-primary" onclick="saveProfileSettings()">ذخیره تغییرات</button>
+    </div>
+
+    <div class="card">
+      <h3>مدیریت دروس</h3>
+      <div class="subject-manage-list">
+        ${DB.subjects.map(s=>`
+          <div class="subject-row">
+            <span class="dot" style="background:${s.color}"></span>
+            <input type="text" value="${s.name}" onchange="renameSubject('${s.id}', this.value)">
+            <input type="color" value="${s.color}" onchange="recolorSubject('${s.id}', this.value)">
+            <button class="btn-sm danger" onclick="removeSubject('${s.id}')">حذف</button>
+          </div>
+        `).join("")}
+      </div>
+      <div class="form-row inline">
+        <input type="text" id="newSubjectName" placeholder="نام درس جدید">
+        <input type="color" id="newSubjectColor" value="#0e8a6d">
+        <button class="btn-sm" onclick="addSubject()">افزودن درس</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>داده‌ها</h3>
+      <div class="settings-actions">
+        <button class="btn-secondary" onclick="exportData()">📤 خروجی JSON</button>
+        <label class="btn-secondary file-label">
+          📥 ورود اطلاعات
+          <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(event)">
+        </label>
+        <button class="btn-danger" onclick="confirmResetAll()">🗑 پاک‌سازی کامل</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>درباره</h3>
+      <p class="muted">اپلیکیشن برنامه‌ریز آزمون تخصص — نسخه MVP. تمامی داده‌ها فقط در مرورگر شما ذخیره می‌شوند.</p>
+    </div>
+  `;
+}
+
+function saveProfileSettings(){
+  DB.user.name = document.getElementById("setName").value.trim() || DB.user.name;
+  DB.user.examDate = document.getElementById("setExamDate").value || DB.user.examDate;
+  DB.user.targetDailyHours = Number(document.getElementById("setTarget").value) || DB.user.targetDailyHours;
+  saveDB();
+  toast("تنظیمات ذخیره شد");
+  renderSettings();
+}
+
+function addSubject(){
+  const name = document.getElementById("newSubjectName").value.trim();
+  const color = document.getElementById("newSubjectColor").value;
+  if(!name){ toast("نام درس رو وارد کن"); return; }
+  DB.subjects.push({ id: uid(), name, color });
+  saveDB();
+  renderSettings();
+}
+
+function renameSubject(id, name){
+  const s = DB.subjects.find(x=>x.id===id);
+  if(s){ s.name = name.trim() || s.name; saveDB(); }
+}
+
+function recolorSubject(id, color){
+  const s = DB.subjects.find(x=>x.id===id);
+  if(s){ s.color = color; saveDB(); }
+}
+
+function removeSubject(id){
+  const inUse = DB.studySessions.some(s=>s.subjectId===id) || DB.testSessions.some(t=>t.subjectId===id);
+  if(inUse){
+    toast("این درس سابقه ثبت‌شده داره، قابل حذف نیست");
+    return;
+  }
+  DB.subjects = DB.subjects.filter(s=>s.id!==id);
+  saveDB();
+  renderSettings();
+}
+
+function exportData(){
+  const blob = new Blob([JSON.stringify(DB, null, 2)], {type:"application/json"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `exam-planner-backup-${todayStr()}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  toast("فایل پشتیبان دانلود شد");
+}
+
+function importData(evt){
+  const file = evt.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = e=>{
+    try{
+      const parsed = JSON.parse(e.target.result);
+      DB = parsed;
+      saveDB();
+      toast("اطلاعات با موفقیت بارگذاری شد");
+      render();
+    }catch(err){
+      toast("فایل نامعتبر است");
+    }
+  };
+  reader.readAsText(file);
+}
+
+function confirmResetAll(){
+  openModal(`
+    <h3>⚠️ پاک‌سازی کامل</h3>
+    <p>تمام داده‌های ذخیره‌شده (جلسات مطالعه، تست‌ها، غلط‌ها، مرورها و نشان‌ها) حذف خواهند شد. این عمل قابل بازگشت نیست.</p>
+    <p class="muted">پیشنهاد می‌شود قبل از این کار یک خروجی JSON بگیرید.</p>
+    <div class="modal-actions">
+      <button class="btn-danger" onclick="resetAllData()">بله، همه‌چیز پاک شود</button>
+      <button class="btn-ghost" onclick="closeModal()">انصراف</button>
+    </div>
+  `);
+}
+
+function resetAllData(){
+  localStorage.removeItem(DB_KEY);
+  location.reload();
+}
+
+/* ================== INIT ================== */
+document.addEventListener("DOMContentLoaded", ()=>{
+  loadDB();          // بارگذاری یا ساخت پایگاه داده اولیه از localStorage
+  checkDailyRollover(); // بررسی تغییر روز و آپدیت استریک/عقب‌ماندگی
+  navigate("dashboard");
+});
+</script>
